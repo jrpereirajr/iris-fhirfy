@@ -6,6 +6,8 @@
       },
     "objectscript.conn" :{
       "ns": "FHIRSERVER",
+      "host": "localhost",
+      "port": 32783,
       "active": true,
       "username": "_SYSTEM",
       "password": "SYS",

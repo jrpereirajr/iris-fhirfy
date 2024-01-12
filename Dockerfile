@@ -1,8 +1,15 @@
-ARG IMAGE=intersystemsdc/irishealth-community:latest
+ARG IMAGE=intersystemsdc/irishealth-ml-community
 FROM $IMAGE as builder
 
 WORKDIR /home/irisowner/irisdev
 #RUN chown ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /opt/irisapp
+
+## Embedded Python environment
+ENV IRISUSERNAME "_SYSTEM"
+ENV IRISPASSWORD "SYS"
+ENV IRISNAMESPACE $NAMESPACE
+ENV PYTHON_PATH=/usr/irissys/bin/
+ENV PATH "/usr/irissys/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/irisowner/bin:/home/irisowner/dev/python"
 
 # run iris and initial 
 RUN --mount=type=bind,src=.,dst=. \

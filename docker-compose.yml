@@ -14,3 +14,8 @@ services:
       - -a
       - iris session iris -U%SYS '##class(Security.Users).UnExpireUserPasswords("*")'
       - --check-caps false
+    volumes:
+      - ./:/home/irisowner/dev
+    environment:
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - GEMINI_API_KEY=$GEMINI_API_KEY
