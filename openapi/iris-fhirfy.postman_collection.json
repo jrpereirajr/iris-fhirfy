@@ -1,0 +1,228 @@
+{
+	"info": {
+		"_postman_id": "35a59983-2ed0-4c2b-a4b2-05040857c6ed",
+		"name": "iris-fhirfy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3176642"
+	},
+	"item": [
+		{
+			"name": "analyze-data",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"input\": {\r\n        \"rawData\": \"Patient ID,First Name,Last Name,Date of Birth,Gender,Phone Number,Email\\n1,John,Doe,1985-05-15,Male,555-123-4567,johndoe@email.com\\n2,Jane,Smith,1990-08-25,Female,555-987-6543,janesmith@email.com\\n3,Michael,Johnson,1977-12-10,Male,555-555-5555,michael@email.com\\n4,Emily,Williams,1995-03-02,Female,555-789-1234,emily@email.com\\n5,David,Brown,1980-06-20,Male,555-456-7890,david@email.com\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:32783/csp/dc/jrpereira/fhirfy/api/analyze-data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"dc",
+						"jrpereira",
+						"fhirfy",
+						"api",
+						"analyze-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:32783/fhir/r4/Patient",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:32783/fhir/r4/Patient",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"fhir",
+						"r4",
+						"Patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "suggest-solution",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"input\": {\r\n        \"rawData\": \"Patient ID,First Name,Last Name,Date of Birth,Gender,Phone Number,Email\\n1,John,Doe,1985-05-15,Male,555-123-4567,johndoe@email.com\\n2,Jane,Smith,1990-08-25,Female,555-987-6543,janesmith@email.com\\n3,Michael,Johnson,1977-12-10,Male,555-555-5555,michael@email.com\\n4,Emily,Williams,1995-03-02,Female,555-789-1234,emily@email.com\\n5,David,Brown,1980-06-20,Male,555-456-7890,david@email.com\",\r\n        \"analysis\": \"**Patient Summary Report**\\n\\n**Patient Information:**\\n\\n* **Name:** John Doe\\n* **Date of Birth:** January 15, 1980\\n* **Gender:** Male\\n* **Address:** 123 Main Street, Anytown, USA\\n* **Phone Number:** (555) 123-4567\\n* **Emergency Contact:** Jane Doe (Spouse), (555) 789-1234\\n\\n**Medical History:**\\n\\n* **Chief Complaint:** Patient presented with chest pain and shortness of breath.\\n* **Past Medical History:** Hypertension, Type 2 Diabetes, Hyperlipidemia.\\n* **Medications:** Lisinopril (10mg daily), Metformin (1000mg twice daily), Simvastatin (20mg daily).\\n\\n**Current Illness:**\\n\\n* Patient experienced chest pain radiating to the left arm and shortness of breath for the past 2 days.\\n* Symptoms worsened with exertion.\\n\\n**Data Structure:**\\n\\nThe data is structured as a patient summary report, which includes the patient's personal information, medical history, and current illness.\\n\\n**Data Content:**\\n\\n* **Patient Information:** This section includes the patient's name, date of birth, gender, address, phone number, and emergency contact information.\\n* **Medical History:** This section includes the patient's chief complaint, past medical history, and current medications.\\n* **Current Illness:** This section describes the patient's current symptoms and how they have progressed over time.\\n\\n**Interoperability Considerations:**\\n\\n* The data is in a human-readable format, which makes it difficult for computers to process.\\n* The data is not standardized, which means that different systems may use different formats to store the same information.\\n* The data is not linked to other relevant data sources, such as the patient's electronic health record.\\n\\n**Recommendations:**\\n\\n* The data should be converted to a machine-readable format, such as XML or JSON.\\n* The data should be standardized using a common data model, such as HL7 FHIR.\\n* The data should be linked to other relevant data sources, such as the patient's electronic health record.\\n\\nBy following these recommendations, the data can be made more interoperable and useful for a variety of purposes, such as clinical decision support, population health management, and research.\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:32783/csp/dc/jrpereira/fhirfy/api/suggest-solution",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"dc",
+						"jrpereira",
+						"fhirfy",
+						"api",
+						"suggest-solution"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generate-module",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"input\": {\r\n        \"solutionSuggestion\": {\r\n            \"name\": \"CSV to HL7 FHIR Converter\",\r\n            \"description\": \"This solution converts CSV data with patient information into the HL7 FHIR protocol.\",\r\n            \"subModules\": [\r\n                {\r\n                    \"subModule\": {\r\n                        \"name\": \"CSVReader\",\r\n                        \"description\": \"Reads the CSV file and parses the data into a list of dictionaries, where each dictionary represents a patient.\"\r\n                    }\r\n                },\r\n                {\r\n                    \"subModule\": {\r\n                        \"name\": \"FHIRConverter\",\r\n                        \"description\": \"Converts the list of dictionaries into a FHIR Bundle resource.\"\r\n                    }\r\n                },\r\n                {\r\n                    \"subModule\": {\r\n                        \"name\": \"FHIRWriter\",\r\n                        \"description\": \"Writes the FHIR Bundle resource to a file in JSON format.\"\r\n                    }\r\n                }\r\n            ],\r\n            \"pseudoCode\": \"python\\n# Read the CSV file and parse the data\\ncsv_reader = CSVReader()\\ncsv_data = csv_reader.read_csv('patients.csv')\\n\\n# Convert the CSV data to a FHIR Bundle resource\\nfhir_converter = FHIRConverter()\\nfhir_bundle = fhir_converter.convert_csv_to_fhir(csv_data)\\n\\n# Write the FHIR Bundle resource to a file\\nfhir_writer = FHIRWriter()\\nfhir_writer.write_fhir_bundle(fhir_bundle, 'patients.json')\\n\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:32783/csp/dc/jrpereira/fhirfy/api/generate-module",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"dc",
+						"jrpereira",
+						"fhirfy",
+						"api",
+						"generate-module"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "SYS",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "_system",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
