@@ -1,0 +1,20 @@
+Class dc.jrpereira.fhirfy.core.Utils Extends %RegisteredObject
+{
+
+ClassMethod LoadPatientData(path, namespace, appKey) As %Status
+{
+    Set exception = ""
+    Set currNS = $NAMESPACE
+    Try {
+        Set $NAMESPACE = namespace
+        $$$ThrowOnError(##class(HS.FHIRServer.Tools.DataLoader).SubmitResourceFiles(path, namespace, appKey))
+    } Catch (e) {
+        Set exception = e
+    }
+    Set $NAMESPACE = currNS
+    If ($ISOBJECT(exception)) {
+        Throw exception
+    }
+}
+
+}

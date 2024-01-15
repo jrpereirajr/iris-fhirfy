@@ -7,20 +7,27 @@
       <Description>Using IRIS and LLMs to help developers to convert raw data into FHIR</Description>
       <Keywords>FHIR,LLM,Interoperability</Keywords>
       <Packaging>module</Packaging>
-    <SourcesRoot>src</SourcesRoot>
-    <Invokes>
-    <Invoke Class="fhirtemplate.Setup" Method="SetupFHIRServer" Phase="Activate" When="After" ></Invoke>
-    </Invokes>
-    <Resource Name="fhirtemplate.PKG"/>
-    <FileCopy Name="data/fhir/" Target="${mgrdir}test-data-fhir/"/>
-      <CSPApplication
-        Url="/fhirUI"
-        SourcePath="/fhirUI"
-        DeployPath="{$cspdir}/fhirUI"
-        ServeFiles="1"
-        Recurse="1"
-        CookiePath="/fhirUI"
-       />
+      <SourcesRoot>src</SourcesRoot>
+      <Dependencies>
+        <ModuleReference>
+        <Name>fhir-server</Name>
+        <Version>*</Version>
+        </ModuleReference>
+        <ModuleReference>
+        <Name>swagger-ui</Name>
+        <Version>*</Version>
+        </ModuleReference>
+      </Dependencies>
+      <FileCopy Name="data/dc/jrpereira/irisfhirfy/fhir" Target="${mgrdir}test-data-fhir/"/>
+      <Invokes>
+        <Invoke Class="dc.jrpereira.fhirfy.core.Utils" Method="LoadPatientData" Phase="Activate" When="After" >
+          <Arg>${mgrdir}test-data-fhir/</Arg>
+          <Arg>FHIRSERVER</Arg>
+          <Arg>/fhir/r4</Arg>
+        </Invoke>
+      </Invokes>
+      <Resource Name="dc.jrpereira.fhirfy.PKG"/>
+      <CSPApplication CookiePath="/csp/dc/jrpereira/fhirfy/api/" DefaultTimeout="900" DispatchClass="dc.jrpereira.fhirfy.api.disp" PasswordAuthEnabled="1" Recurse="1" ServeFiles="1" ServeFilesTimeout="3600" UnauthenticatedEnabled="0" Url="/csp/dc/jrpereira/fhirfy/api" UseSessionCookie="2"/>
     </Module>
   </Document>
 </Export>

@@ -5,7 +5,7 @@
         "iris.script": "objectscript"
       },
     "objectscript.conn" :{
-      "ns": "FHIRSERVER",
+      "ns": "USER",
       "host": "localhost",
       "port": 32783,
       "active": true,
@@ -27,7 +27,7 @@
         "connectionMethod": "Server and Port",
         "driver": "InterSystems IRIS",
         "name": "iris-fhir-template",
-        "namespace": "FHIRSERVER",
+        "namespace": "USER",
         "password": "SYS",
         "port": 32783,
         "previewLimit": 50,
