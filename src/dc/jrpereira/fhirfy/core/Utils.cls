@@ -3,6 +3,10 @@ Class dc.jrpereira.fhirfy.core.Utils Extends %RegisteredObject
 
 ClassMethod LoadPatientData(path, namespace, appKey) As %Status
 {
+    If $GET(^IRIS.TEMP("dc.jrpereira.fhirfy.core.Utils.LoadPatientData")) {
+        Return $$$OK
+    }
+
     Set exception = ""
     Set currNS = $NAMESPACE
     Try {
@@ -15,6 +19,8 @@ ClassMethod LoadPatientData(path, namespace, appKey) As %Status
     If ($ISOBJECT(exception)) {
         Throw exception
     }
+    
+    Set ^IRIS.TEMP("dc.jrpereira.fhirfy.core.Utils.LoadPatientData") = 1
 }
 
 }
