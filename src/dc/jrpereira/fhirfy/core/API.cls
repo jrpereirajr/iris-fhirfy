@@ -17,7 +17,15 @@ Method %OnNew() As %Status
 
 Method AnalyzeData(dataInput As %DynamicObject) As %DynamicObject
 {
+    #; return ##class(dc.jrpereira.fhirfy.core.Teste).%New().Teste()
     Set analysis = ..Analyzer.GetResponse(dataInput)
+    #; Set analysis = ..Analyzer.teste(dataInput)
+    #; Try {
+    #;     Set analysis = ..Analyzer.GetResponse(dataInput)
+    #; } Catch e {
+    #;     Do e.Log()
+    #;     Throw e
+    #; }
     Return {
         "markdownResponse": (analysis)
     }

@@ -179,10 +179,86 @@
       }
     },
     "GenerateModuleRequest": {
-      "type": "object"
+      "$ref": "#/definitions/SuggestedSolutionResponse"
     },
     "GenerateModuleResponse": {
-      "type": "object"
+      "$ref": "#/definitions/Module"
+    },
+    "Module": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ModuleFile"
+          }
+        }
+      }
+    },
+    "ModuleFile": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceCode": {
+          "type": "string"
+        },
+        "functions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ModuleFunction"
+          }
+        }
+      }
+    },
+    "ModuleFunction": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "parameters": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ModuleParameter"
+              }
+            }
+          }
+        },
+        "output": {
+          "type": "string"
+        }
+      }
+    },
+    "ModuleParameter": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
     }
   }
 }

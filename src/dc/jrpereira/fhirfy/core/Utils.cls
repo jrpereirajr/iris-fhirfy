@@ -23,4 +23,9 @@ ClassMethod LoadPatientData(path, namespace, appKey) As %Status
     Set ^IRIS.TEMP("dc.jrpereira.fhirfy.core.Utils.LoadPatientData") = 1
 }
 
+ClassMethod CleanTripleQuotesString(stringValue As %String) As %String
+{
+    Return $REPLACE(stringValue, $CHAR(9,9), "")
+}
+
 }
