@@ -18,15 +18,14 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     #; raw = iris.cls("tests.dc.jrpereira.fhirfy.unittests.core.MocksData").GetSolutionGeneratorMockData()
 
     prompt = self.GetSystemPrompt(dataInput._Get("input"))
-    raw = self.llm.SendPrompt(prompt)
-    raw = raw.replace("```xml", "")
-    raw = raw.replace("```", "")
-    raw = r'{}'.format(raw)
+    xmlData = self.llm.SendPrompt(prompt)
+    xmlData = xmlData.replace("```xml", "")
+    xmlData = xmlData.replace("```", "")
     
     try:
-        result = xmltodict.parse(raw)
+        result = xmltodict.parse(xmlData)
     except Exception as e:
-        raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + raw)
+        raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
     return json.dumps(result)
 }
 
@@ -41,7 +40,7 @@ Method GetSystemPrompt(data) As %String [ Language = python ]
     return clean(f"""
 # Problem statement
 
-You have the to think how to create a code that transform raw data into HL7 FHIR.
+You have the to think how to create a code that transform raw data into a FHIR Bundle resource.
 This is an analysis of the raw data:
 
 ```
