@@ -26,7 +26,7 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     return result
 }
 
-Method GetSystemPrompt(data = "") As %String [ Language = python ]
+Method GetSystemPrompt(data) As %String [ Language = python ]
 {
     import iris
     clean = iris.cls("dc.jrpereira.fhirfy.core.Utils").CleanTripleQuotesString
