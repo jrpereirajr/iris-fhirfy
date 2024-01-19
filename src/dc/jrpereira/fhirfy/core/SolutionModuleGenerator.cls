@@ -15,7 +15,7 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     import json
     import iris
 
-    #; xmlData = iris.cls("tests.dc.jrpereira.fhirfy.unittests.core.MocksData").GetSolutionModuleGeneratorMockData()
+    #; xmlData = iris.cls("dc.jrpereira.fhirfy.unittests.core.MocksData").GetSolutionModuleGeneratorMockData()
 
     prompt = self.GetSystemPrompt(dataInput._Get("input"))
     try:
@@ -82,11 +82,11 @@ Follow this template, replacing text between ## and ## with your answers:
 <module>
     <name>## module name formmated in snake case ##</name>
     <description>## modle high level description ##</description>
-    <requirements>
+    <dependencies>
 <![CDATA[
 ## File requirements.txt for Python dependencies ##
 ]]>
-</requirements>
+    </dependencies>
     <files>
         <!-- The Python package description -->
         <file>
@@ -147,14 +147,17 @@ Method CreateSolutionModuleWrapper(moduleInfo As %String)
     $$$ThrowOnError(..CreateSolutionModule(moduleInfo))
 }
 
-Method CreateSolutionModule(moduleInfo As %DynamicObject) As %Status
+Method CreateSolutionModule(moduleInfo As %DynamicObject, baseDirectory As %String = "") As %Status
 {
     Set status = $$$OK
     Try {
-        #; Set baseDirectory = ##class(%File).NormalizeDirectory("/tmp")
-        Set baseDirectory = ##class(%File).NormalizeDirectory("/home/irisowner/dev/python")
+        If baseDirectory = "" {
+            Set baseDirectory = ##class(%File).NormalizeDirectory("/home/irisowner/dev/python")
+        }
+        Set moduleDirectory = baseDirectory_"/"_moduleInfo.name
         $$$ThrowOnError(..CreateModuleDirectory(moduleInfo, baseDirectory))
-        $$$ThrowOnError(..WritePythonFiles(moduleInfo, baseDirectory_"/"_moduleInfo.name))
+        $$$ThrowOnError(..WriteRequirementsFile(moduleInfo, moduleDirectory))
+        $$$ThrowOnError(..WritePythonFiles(moduleInfo, moduleDirectory))
     } Catch ex {
         Set status = ex.AsStatus()
         throw ex
@@ -207,6 +210,19 @@ Method WritePythonFiles(moduleMetadata As %DynamicObject, baseDirectory As %Stri
     } Catch ex {
         Set status = ex.AsStatus()
     }
+    Quit status
+}
+
+Method WriteRequirementsFile(moduleMetadata As %DynamicObject, baseDirectory As %String) As %Status
+{
+	Set status = $$$OK
+    Try {
+        Set requirementsFilePath = baseDirectory_"/requirements.txt"
+        $$$ThrowOnError(..WriteFile(requirementsFilePath, moduleMetadata.dependencies))
+    } Catch ex {
+        Set status = ex.AsStatus()
+    }
+
     Quit status
 }
 

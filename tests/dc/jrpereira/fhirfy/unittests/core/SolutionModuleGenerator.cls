@@ -1,4 +1,4 @@
-Class tests.dc.jrpereira.fhirfy.unittests.SolutionModuleGenerator Extends %UnitTest.TestCase
+Class dc.jrpereira.fhirfy.unittests.core.SolutionModuleGenerator Extends %UnitTest.TestCase
 {
 
 Property generator As dc.jrpereira.fhirfy.core.SolutionModuleGenerator;
@@ -126,7 +126,7 @@ Method TestCreateSolutionModule()
 
 	Set baseDirectory = ..MyTestDirectory
 
-	Set status = ..generator.CreateSolutionModule(.moduleInfo)
+	Set status = ..generator.CreateSolutionModule(.moduleInfo, baseDirectory)
 	Do $$$AssertStatusOK(status, "Expected no error during module creation")
 
 	Set moduleDirectory = baseDirectory_"/"_moduleInfo.name
@@ -139,6 +139,28 @@ Method TestCreateSolutionModule()
 		Set pythonFileExists = ##class(%File).Exists(pythonFilePath)
 		Do $$$AssertTrue(pythonFileExists, "Expected Python file to exist: "_file.name)
 	}
+}
+
+Method TestWriteRequirementsFile()
+{
+    Set moduleMetadata = {}
+    Set moduleMetadata.dependencies = $LTS($LFS("numpy==1.21.2,pandas==1.3.3,matplotlib==3.4.3"), $CHAR(10))
+
+    Set baseDirectory = ..MyTestDirectory
+
+    Set status = ..generator.WriteRequirementsFile(moduleMetadata, baseDirectory)
+    Do $$$AssertEquals(status, $$$OK, "Status should be OK")
+
+    Set requirementsFilePath = baseDirectory_"/requirements.txt"
+    Do $$$AssertTrue(##class(%File).Exists(requirementsFilePath), "Requirements file should exist")
+
+    Set fileContents = ""
+    If ##class(%File).Exists(requirementsFilePath) {
+		Set stream = ##class(%Stream.FileCharacter).%New()
+		$$$ThrowOnError(stream.LinkToFile(requirementsFilePath))
+		Set fileContents =  stream.Read()
+    }
+    Do $$$AssertEquals(fileContents, moduleMetadata.dependencies_$CHAR(10), "File contents should match dependencies")
 }
 
 }
