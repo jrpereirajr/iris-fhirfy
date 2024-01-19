@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="resources/style.css">
     <title>FHIRfy</title>
 </head>
 
@@ -30,7 +30,7 @@
             <button id="submitButton">Analyse it!</button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="resources/fhirfy.js"></script>
 </body>
 
 </html>
