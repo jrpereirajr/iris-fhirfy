@@ -1,142 +1,148 @@
 Class dc.jrpereira.fhirfy.core.SolutionModuleGenerator Extends %RegisteredObject
 {
 
+Property llm As LLMService;
+
+Method %OnNew() As %Status
+{
+    Set ..llm = ##class(LLMService).GetLLMService()
+    Return $$$OK
+}
+
 Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
 {
     import xmltodict
     import json
-    xmlData = r"""<?xml version="1.0" encoding="UTF-8"?>
-<module>
-    <name>csv_to_hl7_fhir_converter</name>
-    <description>This solution converts CSV data with patient information into the HL7 FHIR protocol.</description>
-    <files>
-        <file>
-            <name>__init__.py</name>
-            <description></description>
-            <source-code>
-            <![CDATA[
-                from .CSVParser import CSVParser
-                from .FHIRBuilder import FHIRBuilder
-            ]]>
-            </source-code>
-        </file>
-        <file>
-            <name>main.py</name>
-            <description></description>
-            <source-code>
-            <![CDATA[
-                from CSVParser import CSVParser
-                from FHIRBuilder import FHIRBuilder
+    import iris
 
-                csv_data = "Patient ID,Patient Name\n42,Armstrong51\n43,Gusikowski974\n50,Stanton715\n66,Sawayn19\n919,Halvorson124"
-                csv_parser = CSVParser(csv_data)
-                parsed_data = csv_parser.parse()
+    #; xmlData = iris.cls("tests.dc.jrpereira.fhirfy.unittests.core.MocksData").GetSolutionModuleGeneratorMockData()
 
-                fhir_builder = FHIRBuilder()
-                fhir_data = fhir_builder.build(parsed_data)
-
-                print(fhir_data)
-            ]]>
-            </source-code>
-        </file>
-        <file>
-            <name>CSVParser.py</name>
-            <description></description>
-            <source-code>
-            <![CDATA[
-                class CSVParser:
-                    def __init__(self, csv_data):
-                        self.csv_data = csv_data
-
-                    def parse(self):
-                        lines = self.csv_data.split('\n')
-                        headers = lines[0].split(',')
-                        data = []
-                        for line in lines[1:]:
-                            values = line.split(',')
-                            patient = {}
-                            for i, value in enumerate(values):
-                                patient[headers[i]] = value
-                            data.append(patient)
-                        return data
-            ]]>
-            </source-code>
-            <functions>
-                <function>
-                    <name>__init__</name>
-                    <description>Initializes the CSVParser object with the CSV data.</description>
-                    <input>
-                        <parameter>
-                            <name>csv_data</name>
-                            <type>str</type>
-                            <description>The CSV data to be parsed.</description>
-                        </parameter>
-                    </input>
-                    <output></output>
-                </function>
-                <function>
-                    <name>parse</name>
-                    <description>Parses the CSV data into a list of dictionaries, where each dictionary represents a patient.</description>
-                    <input></input>
-                    <output>list</output>
-                </function>
-            </functions>
-        </file>
-        <file>
-            <name>FHIRBuilder.py</name>
-            <description></description>
-            <source-code>
-            <![CDATA[
-                class FHIRBuilder:
-                    def build(self, data):
-                        fhir_data = []
-                        for patient in data:
-                            fhir_patient = {}
-                            fhir_patient["resourceType"] = "Patient"
-                            fhir_patient["id"] = patient["Patient ID"]
-                            fhir_patient["name"] = [{"family": patient["Patient Name"]}]
-                            fhir_data.append(fhir_patient)
-                        return fhir_data
-            ]]>
-            </source-code>
-            <functions>
-                <function>
-                    <name>__init__</name>
-                    <description>Initializes the FHIRBuilder object.</description>
-                    <input></input>
-                    <output></output>
-                </function>
-                <function>
-                    <name>build</name>
-                    <description>Builds the HL7 FHIR representation of the patient data.</description>
-                    <input>
-                        <parameter>
-                            <name>data</name>
-                            <type>list</type>
-                            <description>The list of dictionaries representing the patient data.</description>
-                        </parameter>
-                    </input>
-                    <output>list</output>
-                </function>
-            </functions>
-        </file>
-    </files>
-</module>
-    """
-    xmlData = xmlData.replace("\t\t                ", "")
-    xmlDict = xmltodict.parse(xmlData)["module"]
+    prompt = self.GetSystemPrompt(dataInput._Get("input"))
+    try:
+        xmlData = self.llm.SendPrompt(prompt)
+    except ValueError as e:
+        if str(e).find("This response is not simple text.Use the `result.parts` accessor or the full `result.candidates[index].content.parts` lookup instead") != -1:
+            raise Exception("Your prompt seems to let the LLM to produce a very long response, which was denied. Prompt: " + str(e))
+        raise e
+    except Exception as e:
+        raise e
+    xmlData = xmlData.replace("```xml", "")
+    xmlData = xmlData.replace("```", "")
+    #; xmlData = xmlData.replace("                ", "")
+    
+    try:
+        xmlDict = xmltodict.parse(xmlData)
+    except Exception as e:
+        raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
+    xmlDict = xmlDict["module"]
     # avoid the structure ["files"]["file"]
     xmlDict["files"] = xmlDict["files"]["file"]
     result = json.dumps(xmlDict)
 
-    import iris
     result = iris.cls("%Library.DynamicObject")._FromJSON(result)
     self.CreateSolutionModuleWrapper(result)
 
     return result
 }
 
-Method CreateSolutionModuleWrapper(moduleInfo As %DynamicObject)
+Method GetSystemPrompt(data) As %String [ Language = python ]
+{
+    import iris
+
+    solutionSuggestion = data._Get("solutionSuggestion")._ToJSON()
+
+    clean = iris.cls("dc.jrpereira.fhirfy.core.Utils").CleanTripleQuotesString
+    return clean(f"""
+# Problem statement
+
+You have to implement a serie of Python modules following provided instructions.
+The instructions are formatted in JSON.
+Implements all sub modules in the `subModules` key in the instructions JSON.
+Create a file called main.py which implements the pseudo code in the `pseudoCode` key in the instructions JSON.
+Create a __init__.py file which imports all the required modules.
+Instructions JSON to your solution:
+
+```json
+{solutionSuggestion}
+```
+
+# Response expected format
+
+Your answer must be a valid XML object which includes:
+- the source code of the **whole** module into a XML CDATA block
+- an object with information about each of the sub module functions, including:
+    - the function name
+    - the function description and purpose
+    - a list with the input parameters with information about them
+    - a description of the function return
+- don't include any aditional formatting characters
+
+Follow this template, replacing text between ## and ## with your answers:
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <name>## module name formmated in snake case ##</name>
+    <description>## modle high level description ##</description>
+    <requirements>
+<![CDATA[
+## File requirements.txt for Python dependencies ##
+]]>
+</requirements>
+    <files>
+        <!-- The Python package description -->
+        <file>
+            <name>__init__.py</name>
+            <description></description>
+            <source-code>
+<![CDATA[
+...
+]]>
+            </source-code>
+        </file>
+        <!-- The main files description -->
+        <file>
+            <name>main.py</name>
+            <description></description>
+            <source-code>
+<![CDATA[
+...
+]]>
+            </source-code>
+        </file>
+        <!-- Package sub modules -->
+        <file>
+            <name>sub-module-name.py</name>
+            <description></description>
+            <!-- sub module source code -->
+            <source-code>
+<![CDATA[
+...
+]]>
+            </source-code>
+            <!-- sub module functions metadata -->
+            <functions>
+                <function>
+                    <name></name>
+                    <description></description>
+                    <input>
+                        <parameter>
+                            <name></name>
+                            <type></type>
+                            <description></description>
+                        </parameter>
+                        <!-- Additional input parameters if needed -->
+                    </input>
+                    <output></output>
+                </function>
+                <!-- Additional functions if needed -->
+            </functions>
+        </file>
+        <!-- Additional sub-modules files if needed -->
+    </files>
+</module>
+""")
+}
+
+Method CreateSolutionModuleWrapper(moduleInfo As %String)
 {
     $$$ThrowOnError(..CreateSolutionModule(moduleInfo))
 }
