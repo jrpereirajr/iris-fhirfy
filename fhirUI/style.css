@@ -76,7 +76,7 @@ textarea {
     margin-right: 10px;
     padding: 10px;
     box-sizing: border-box;
-    background-color: #f8efed;
+    background-color: #e7eefb;
     color: #003cab;
     border: none;
     border-radius: 10px;
@@ -120,7 +120,7 @@ button:hover {
 }
 
 .user-prompt {
-    background-color: #f8efed;
+    background-color: #e7eefb;
     color: #003cab;
     font-style: italic;
     padding: 10px;
