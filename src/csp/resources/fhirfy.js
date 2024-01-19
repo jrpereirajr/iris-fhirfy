@@ -1,4 +1,3 @@
-
 const simulateTypingAnimation = (text) => {
     const typingSpeed = 40; // Adjust speed as needed
     let index = 0;
@@ -9,10 +8,21 @@ const simulateTypingAnimation = (text) => {
         if (index < text.length) {
             index++;
             setTimeout(type, typingSpeed);
+        } else {
+            addResponseToChat(responseText.textContent);
+            responseText.textContent = '';
         }
     }
 
     type();
+}
+
+const addResponseToChat = (responseTextContent) => {
+    const newResponseDiv = document.createElement('div');
+    newResponseDiv.className = 'response-text';
+    newResponseDiv.textContent = responseTextContent;
+
+    chatContainer.insertBefore(newResponseDiv, document.getElementById('responseContainer'));
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -44,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         submitButton.appendChild(spinnerIcon);
 
-        simulateTypingAnimation(` Analyzing data... ` );
+        simulateTypingAnimation(` # Analysis Report\n\nThe provided data is a list of patient records, each containing specific information about individual patients.` );
         return true;
 
         fetch('/analyze-data', {

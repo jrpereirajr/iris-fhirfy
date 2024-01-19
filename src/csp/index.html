@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
+    <link rel="stylesheet" href="resources/style.css">
+    <title>FHIRfy</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">FHIR<span class="fy-box">fy</span></div>
+            <div class="header-buttons">
+                <button id="themeSwitch" class="theme-switch">
+                    <i id="themeIcon" class="fas fa-sun button-icon"></i>
+                </button>
+            </div>
+        </div>
+        <div class="chat-container" id="chatContainer">
+
+            <div id="responseContainer" class="response-container">
+                <p id="responseText" class="response-text"></p>
+            </div>
+        </div>
+        <div class="bottom-bar">
+            <textarea id="markdownInput" placeholder="Enter your data to analyse..."></textarea>
+            <button id="submitButton">Analyse it!</button>
+        </div>
+    </div>
+    <script src="resources/fhirfy.js"></script>
+</body>
+
+</html>

@@ -129,10 +129,10 @@ button:hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
- .dark-theme .user-prompt {
+.dark-theme .user-prompt {
     color: #d7d7d7;
     background-color: #676f9d;
- }
+}
 
 .clear-button {
     background: none;
