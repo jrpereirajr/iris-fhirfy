@@ -14,7 +14,7 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     import xmltodict
 
     #; import iris
-    #; xmlData = iris.cls("tests.dc.jrpereira.fhirfy.unittests.core.MocksData").GetRawDataAnalyzerMockData()
+    #; xmlData = iris.cls("dc.jrpereira.fhirfy.unittests.core.MocksData").GetRawDataAnalyzerMockData()
     
     rawData = dataInput._Get("input")._Get("rawData")
     prompt = self.GetSystemPrompt(rawData)

@@ -1,4 +1,4 @@
-Class tests.dc.jrpereira.fhirfy.unittests.core.MocksData Extends %RegisteredObject
+Class dc.jrpereira.fhirfy.unittests.core.MocksData Extends %RegisteredObject
 {
 
 ClassMethod GetRawDataAnalyzerMockData() As %String [ Language = python ]
@@ -100,6 +100,11 @@ ClassMethod GetSolutionModuleGeneratorMockData() As %String [ Language = python 
 <module>
     <name>csv_to_hl7_fhir_converter</name>
     <description>This solution converts CSV data with patient information into the HL7 FHIR protocol.</description>
+    <dependencies>
+<![CDATA[
+fhirpy==0.1.1
+]]>
+    </dependencies>
     <files>
         <file>
             <name>__init__.py</name>
