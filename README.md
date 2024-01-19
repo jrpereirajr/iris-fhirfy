@@ -4,7 +4,17 @@
 
 # IRIS-FHIRfy
 
-IRIS-FHIRfy is a cutting-edge project aimed at simplifying healthcare data interoperability. Leveraging the power of Iris interoperability and LLMs (Language Model Modules), this project offers a seamless solution for converting raw data into the HL7 FHIR (Fast Healthcare Interoperability Resources) standard.
+IRIS-FHIRfy is a project aimed at simplifying healthcare data interoperability by helping developer to understand and design the workflow from the input data. Leveraging the power of InterSystems IRIS Interoperability and LLMs (Language Model Models), this project offers a seamless solution for converting raw data into the HL7 FHIR (Fast Healthcare Interoperability Resources) standard.
+
+## Motivation
+
+FHIR, or Fast Healthcare Interoperability Resources, plays a pivotal role in healthcare interoperability by offering a standardized framework for exchanging healthcare data. It defines a set of data formats and APIs that enable seamless sharing of patient information, clinical data, and administrative details across various healthcare systems. FHIR's importance lies in its ability to enhance data accessibility, improve care coordination, and facilitate the development of innovative healthcare applications.
+
+Healthcare data is incredibly diverse, ranging from structured electronic health records (EHRs) to unstructured patient notes, images, and sensor data. This diversity poses a significant challenge for interoperability development. Integrating disparate data sources and ensuring they adhere to FHIR standards can be complex and time-consuming, often requiring extensive manual effort and expertise.
+
+InterSystems IRIS, with its powerful interoperability capabilities, emerges as a valuable tool for addressing these challenges. IRIS provides a robust platform for data integration, transformation, and routing, making it easier to handle the variety of healthcare data formats. Its ability to connect disparate systems and support FHIR standards natively makes it a natural choice for healthcare interoperability projects.
+
+The motivation behind the IRIS-FHIRfy project stems from recognizing the critical need to simplify the conversion of raw healthcare data into the FHIR format. By leveraging the capabilities of InterSystems IRIS and Language Model Models (LLMs), such as advanced natural language processing, IRIS-FHIRfy aims to empower developers with a streamlined solution. This project seeks to expedite the process of converting diverse healthcare data sources into FHIR, reducing development effort and accelerating the adoption of FHIR standards in healthcare applications.
 
 ## Prerequisites
 Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
