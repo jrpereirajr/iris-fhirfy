@@ -1,5 +1,5 @@
 const simulateTypingAnimation = (text) => {
-    const typingSpeed = 40; // Adjust speed as needed
+    const typingSpeed = 30; // Adjust speed as needed
     let index = 0;
 
     function type() {
@@ -10,7 +10,7 @@ const simulateTypingAnimation = (text) => {
             setTimeout(type, typingSpeed);
         } else {
             addResponseToChat(responseText.textContent);
-            responseText.textContent = '';
+            responseText.innerHTML = '';
         }
     }
 
@@ -20,7 +20,7 @@ const simulateTypingAnimation = (text) => {
 const addResponseToChat = (responseTextContent) => {
     const newResponseDiv = document.createElement('div');
     newResponseDiv.className = 'response-text';
-    newResponseDiv.textContent = responseTextContent;
+    newResponseDiv.innerHTML = marked.marked(responseTextContent);
 
     chatContainer.insertBefore(newResponseDiv, document.getElementById('responseContainer'));
 }
