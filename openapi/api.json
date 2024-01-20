@@ -107,6 +107,27 @@
           }
         }
       }
+    },
+    "/mock/simple-csv": {
+      "get": {
+        "operationId": "mockSimpleCSV",
+        "summary": "Mock data for a simple CSV as input",
+        "description": "Get the mock data for sample of system process of a simple CSV containg basic patient infor.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful solution suggestion response",
+            "schema": {
+              "$ref": "#/definitions/MockDataResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -179,10 +200,20 @@
       }
     },
     "GenerateModuleRequest": {
-      "$ref": "#/definitions/SuggestedSolutionResponse"
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/SuggestedSolutionResponse"
+        }
+      ]
     },
     "GenerateModuleResponse": {
-      "$ref": "#/definitions/Module"
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Module"
+        }
+      ]
     },
     "Module": {
       "type": "object",
@@ -257,6 +288,23 @@
         },
         "description": {
           "type": "string"
+        }
+      }
+    },
+    "MockDataResponse": {
+      "type": "object",
+      "properties": {
+        "analysisInput": {
+          "$ref": "#/definitions/AnalysisInput"
+        },
+        "analysisRespose": {
+          "$ref": "#/definitions/AnalysisResponse"
+        },
+        "suggestedSolutionResponse": {
+          "$ref": "#/definitions/SuggestedSolutionResponse"
+        },
+        "generateModuleResponse": {
+          "$ref": "#/definitions/GenerateModuleResponse"
         }
       }
     }

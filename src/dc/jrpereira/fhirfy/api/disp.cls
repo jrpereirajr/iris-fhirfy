@@ -23,6 +23,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/suggest-solution" Method="post" Call="suggestSolution" />
   <!-- Generates the code for a solution suggestion. -->
   <Route Url="/generate-module" Method="post" Call="generateModule" />
+  <!-- Mock data for a simple CSV as input -->
+  <Route Url="/mock/simple-csv" Method="get" Call="mockSimpleCSV" />
 </Routes>
 }
 
@@ -72,6 +74,21 @@ ClassMethod generateModule() As %Status
         If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"input")) Quit
         Set pinput=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
         Set response=##class(dc.jrpereira.fhirfy.api.impl).generateModule(pinput)
+        Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
+        Do ..LogInBackground(ex)
+    }
+    Quit $$$OK
+}
+
+/// Mock data for a simple CSV as input
+ClassMethod mockSimpleCSV() As %Status
+{
+    Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).mockSimpleCSV()
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))

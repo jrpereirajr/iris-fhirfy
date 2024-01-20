@@ -18,9 +18,7 @@ Method %OnNew() As %Status
 Method AnalyzeData(dataInput As %DynamicObject) As %DynamicObject
 {
     Set analysis = ..Analyzer.GetResponse(dataInput)
-    Return {
-        "markdownResponse": (analysis)
-    }
+    Return analysis
 }
 
 Method SuggestSolution(input As %DynamicObject) As %DynamicObject

@@ -113,6 +113,27 @@ XData OpenAPI [ MimeType = application/json ]
           }
         }
       }
+    },
+    "/mock/simple-csv":{
+      "get":{
+        "operationId":"mockSimpleCSV",
+        "summary":"Mock data for a simple CSV as input",
+        "description":"Get the mock data for sample of system process of a simple CSV containg basic patient infor.",
+        "consumes":[
+          "application/json"
+        ],
+        "produces":[
+          "application/json"
+        ],
+        "responses":{
+          "200":{
+            "description":"Successful solution suggestion response",
+            "schema":{
+              "$ref":"#/definitions/MockDataResponse"
+            }
+          }
+        }
+      }
     }
   },
   "definitions":{
@@ -185,10 +206,113 @@ XData OpenAPI [ MimeType = application/json ]
       }
     },
     "GenerateModuleRequest":{
-      "type":"object"
+      "type":"object",
+      "allOf":[
+        {
+          "$ref":"#/definitions/SuggestedSolutionResponse"
+        }
+      ]
     },
     "GenerateModuleResponse":{
-      "type":"object"
+      "type":"object",
+      "allOf":[
+        {
+          "$ref":"#/definitions/Module"
+        }
+      ]
+    },
+    "Module":{
+      "type":"object",
+      "properties":{
+        "name":{
+          "type":"string"
+        },
+        "description":{
+          "type":"string"
+        },
+        "files":{
+          "type":"array",
+          "items":{
+            "$ref":"#/definitions/ModuleFile"
+          }
+        }
+      }
+    },
+    "ModuleFile":{
+      "type":"object",
+      "properties":{
+        "name":{
+          "type":"string"
+        },
+        "description":{
+          "type":"string"
+        },
+        "sourceCode":{
+          "type":"string"
+        },
+        "functions":{
+          "type":"array",
+          "items":{
+            "$ref":"#/definitions/ModuleFunction"
+          }
+        }
+      }
+    },
+    "ModuleFunction":{
+      "type":"object",
+      "properties":{
+        "name":{
+          "type":"string"
+        },
+        "description":{
+          "type":"string"
+        },
+        "input":{
+          "type":"object",
+          "properties":{
+            "parameters":{
+              "type":"array",
+              "items":{
+                "$ref":"#/definitions/ModuleParameter"
+              }
+            }
+          }
+        },
+        "output":{
+          "type":"string"
+        }
+      }
+    },
+    "ModuleParameter":{
+      "type":"object",
+      "properties":{
+        "name":{
+          "type":"string"
+        },
+        "type":{
+          "type":"string"
+        },
+        "description":{
+          "type":"string"
+        }
+      }
+    },
+    "MockDataResponse":{
+      "type":"object",
+      "properties":{
+        "analysisInput":{
+          "$ref":"#/definitions/AnalysisInput"
+        },
+        "analysisRespose":{
+          "$ref":"#/definitions/AnalysisResponse"
+        },
+        "suggestedSolutionResponse":{
+          "$ref":"#/definitions/SuggestedSolutionResponse"
+        },
+        "generateModuleResponse":{
+          "$ref":"#/definitions/GenerateModuleResponse"
+        }
+      }
     }
   }
 }

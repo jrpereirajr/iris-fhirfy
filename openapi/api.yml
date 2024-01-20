@@ -28,6 +28,7 @@ paths:
           description: Successful analysis response
           schema:
             $ref: "#/definitions/AnalysisResponse"
+            
   /suggest-solution:
     post:
       operationId: suggestSolution
@@ -48,6 +49,7 @@ paths:
           description: Successful solution suggestion response
           schema:
             $ref: "#/definitions/SuggestedSolutionResponse"
+            
   /generate-module:
     post:
       operationId: generateModule
@@ -68,6 +70,22 @@ paths:
           description: Successful solution suggestion response
           schema:
             $ref: "#/definitions/GenerateModuleResponse"
+            
+  /mock/simple-csv:
+    get:
+      operationId: mockSimpleCSV
+      summary: Mock data for a simple CSV as input
+      description: Get the mock data for sample of system process of a simple CSV containg basic patient infor.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Successful solution suggestion response
+          schema:
+            $ref: "#/definitions/MockDataResponse"
+            
 definitions:
   AnalysisInput:
     type: "object"
@@ -76,6 +94,7 @@ definitions:
         type: "string"
     example:
       rawData: "Patient ID,Patient Name\n1,Patient 1\n2,Patient 2"
+      
   AnalysisResponse:
     type: "object"
     properties:
@@ -83,6 +102,7 @@ definitions:
         type: "string"
     example:
       markdownResponse: "# Analysis Report\n\nThe provided data is a list of patient records, each containing specific information about individual patients."
+      
   SolutionSuggestionInput:
     type: "object"
     properties:
@@ -93,6 +113,7 @@ definitions:
     example:
       rawData: "Patient ID,Patient Name\n1,Patient 1\n2,Patient 2"
       analysis: "# Analysis Report\n\nThe provided data is a list of patient records, each containing specific information about individual patients."
+      
   SuggestedSolutionResponse:
     type: "object"
     properties:
@@ -113,10 +134,17 @@ definitions:
       solutionSuggestion:
         name: "CSV to HL7 FHIR Converter"
         description: "This solution converts CSV data with patient information into the HL7 FHIR protocol."
+        
   GenerateModuleRequest:
-    $ref: "#/definitions/SuggestedSolutionResponse"
+    type: object
+    allOf:
+      - $ref: "#/definitions/SuggestedSolutionResponse"
+    
   GenerateModuleResponse:
-    $ref: "#/definitions/Module"
+    type: object
+    allOf:
+      - $ref: "#/definitions/Module"
+    
   Module:
     type: object
     properties:
@@ -169,3 +197,15 @@ definitions:
         type: string
       description:
         type: string
+
+  MockDataResponse:
+    type: "object"
+    properties:
+      analysisInput: 
+        $ref: "#/definitions/AnalysisInput"
+      analysisRespose:
+        $ref: "#/definitions/AnalysisResponse"
+      suggestedSolutionResponse:
+        $ref: "#/definitions/SuggestedSolutionResponse"
+      generateModuleResponse:
+        $ref: "#/definitions/GenerateModuleResponse"

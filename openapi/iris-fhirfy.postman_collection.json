@@ -50,9 +50,9 @@
 					"port": "32783",
 					"path": [
 						"csp",
+						"api",
 						"dc",
 						"fhirfy",
-						"api",
 						"analyze-data"
 					]
 				}
@@ -124,9 +124,9 @@
 					"port": "32783",
 					"path": [
 						"csp",
+						"api",
 						"dc",
 						"fhirfy",
-						"api",
 						"suggest-solution"
 					]
 				}
@@ -177,10 +177,49 @@
 					"port": "32783",
 					"path": [
 						"csp",
+						"api",
 						"dc",
 						"fhirfy",
-						"api",
 						"generate-module"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-mock-simple-csv",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/mock/simple-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"api",
+						"dc",
+						"fhirfy",
+						"mock",
+						"simple-csv"
 					]
 				}
 			},

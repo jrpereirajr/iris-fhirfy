@@ -12,6 +12,7 @@ Method %OnNew() As %Status
 Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
 {
     import xmltodict
+    import json
 
     #; import iris
     #; xmlData = iris.cls("dc.jrpereira.fhirfy.unittests.core.MocksData").GetRawDataAnalyzerMockData()
@@ -23,6 +24,9 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
         result = xmltodict.parse(xmlData)["result"]
     except Exception as e:
         raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
+    
+    result = {"markdownResponse": result}
+    result = json.dumps(result)
     return result
 }
 

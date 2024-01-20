@@ -1,5 +1,48 @@
-Class dc.jrpereira.fhirfy.unittests.core.MocksData Extends %RegisteredObject
+Class dc.jrpereira.fhirfy.mock.SimpleCSV Extends %RegisteredObject
 {
+
+Method GetResponse() As %String [ Language = python ]
+{
+    return self.GetResponseOS()
+}
+
+Method GetResponseOS() As %String
+{
+    Set response = {
+        "analysisInput": (..GetRawDataAnalyzerInputMockData()),
+        "analysisRespose": ({}.%FromJSON(..FormatRawDataAnalyzer(..GetRawDataAnalyzerMockData()))),
+        "suggestedSolutionResponse": ({}.%FromJSON(..GetSolutionGeneratorMockData())),
+        "generateModuleResponse": ({}.%FromJSON(..FormatSolutionModule(
+            ..GetSolutionModuleGeneratorMockData())))
+    }
+    Return response.%ToJSON()
+}
+
+Method FormatRawDataAnalyzer(xmlData) As %String [ Language = python ]
+{
+    import xmltodict
+    import json
+    result = xmltodict.parse(xmlData)["result"]
+    result = {"markdownResponse": result}
+    result = json.dumps(result)
+    return result
+}
+
+Method FormatSolutionModule(xml) As %String [ Language = python ]
+{
+    import xmltodict
+    import json
+    xmlDict = xmltodict.parse(xml)
+    xmlDict = xmlDict["module"]
+    # avoid the structure ["files"]["file"]
+    xmlDict["files"] = xmlDict["files"]["file"]
+    return json.dumps(xmlDict)
+}
+
+ClassMethod GetRawDataAnalyzerInputMockData() As %String [ Language = python ]
+{
+    return """Patient ID,Namel\n1,John Doe\n2,Jane Smith\n3,Michael Johnson\n4,Emily Williams\n5,David Brown"""
+}
 
 ClassMethod GetRawDataAnalyzerMockData() As %String [ Language = python ]
 {

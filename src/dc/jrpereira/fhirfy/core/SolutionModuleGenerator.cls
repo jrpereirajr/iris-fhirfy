@@ -15,7 +15,7 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     import json
     import iris
 
-    #; xmlData = iris.cls("dc.jrpereira.fhirfy.unittests.core.MocksData").GetSolutionModuleGeneratorMockData()
+    #; xmlData = iris.cls("dc.jrpereira.fhirfy.mock.SimpleCSV").GetSolutionModuleGeneratorMockData()
 
     prompt = self.GetSystemPrompt(dataInput._Get("input"))
     try:

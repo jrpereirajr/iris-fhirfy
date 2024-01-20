@@ -32,6 +32,6 @@ Application dc.jrpereira.fhirfy.api deployed to /csp/api/dc/fhirfy
 ```
 set file = "/home/irisowner/dev/openapi/api.json"
 set obj = ##class(%DynamicAbstractObject).%FromJSONFile(file)
-do ##class(%REST.API).CreateApplication("dc.jrpereira.fhirfy.api",.obj,,.new,.error)
-zw new, error
+set st = ##class(%REST.API).CreateApplication("dc.jrpereira.fhirfy.api",.obj,,.new,.error)
+zw new, error, st
 ```

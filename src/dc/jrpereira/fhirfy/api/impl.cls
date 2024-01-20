@@ -1,5 +1,5 @@
 /// Business logic class defined by OpenAPI in dc.jrpereira.fhirfy.api.spec<br/>
-/// Updated Jan 14, 2024 00:29:06
+/// Updated Jan 20, 2024 21:13:51
 Class dc.jrpereira.fhirfy.api.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -37,6 +37,15 @@ ClassMethod generateModule(input As %DynamicObject) As %DynamicObject
     //Do ..%SetHeader(<name>,<value>)
     Set api = ##class(dc.jrpereira.fhirfy.core.API).%New()
     Return api.GenerateModule(input)
+}
+
+/// Get the mock data for sample of system process of a simple CSV containg basic patient infor.
+ClassMethod mockSimpleCSV() As %DynamicObject
+{
+    Do ..%SetStatusCode(200)
+    //Do ..%SetHeader(<name>,<value>)
+    Set api = ##class(dc.jrpereira.fhirfy.mock.API).%New()
+    Return api.GetSimpleCSVMockData()
 }
 
 }
