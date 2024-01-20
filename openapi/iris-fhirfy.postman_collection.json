@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "35a59983-2ed0-4c2b-a4b2-05040857c6ed",
+		"_postman_id": "d390f3c1-55aa-476f-aa01-7f368c5002a7",
 		"name": "iris-fhirfy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3176642"
@@ -42,7 +42,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:32783/csp/dc/jrpereira/fhirfy/api/analyze-data",
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/analyze-data",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -51,7 +51,6 @@
 					"path": [
 						"csp",
 						"dc",
-						"jrpereira",
 						"fhirfy",
 						"api",
 						"analyze-data"
@@ -117,7 +116,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:32783/csp/dc/jrpereira/fhirfy/api/suggest-solution",
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/suggest-solution",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -126,7 +125,6 @@
 					"path": [
 						"csp",
 						"dc",
-						"jrpereira",
 						"fhirfy",
 						"api",
 						"suggest-solution"
@@ -171,7 +169,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:32783/csp/dc/jrpereira/fhirfy/api/generate-module",
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/generate-module",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -180,7 +178,6 @@
 					"path": [
 						"csp",
 						"dc",
-						"jrpereira",
 						"fhirfy",
 						"api",
 						"generate-module"

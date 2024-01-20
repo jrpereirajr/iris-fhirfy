@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatContainer.insertBefore(responseDiv, document.querySelector('#responseContainer'));
         submitButton.appendChild(spinnerIcon);
 
-        fetch('/csp/dc/jrpereira/fhirfy/api/analyze-data', {
+        fetch('/csp/api/dc/fhirfy/analyze-data', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 suggestImplementation = (request) => {
     // Make a request to the suggest-solution API endpoint
-    fetch('/csp/dc/jrpereira/fhirfy/api/suggest-solution', {
+    fetch('/csp/api/dc/fhirfy/suggest-solution', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ suggestImplementation = (request) => {
 
 generateModel = (request) => {
     // Make a request to the suggest-solution API endpoint
-    fetch('/csp/dc/jrpereira/fhirfy/api/generate-module', {
+    fetch('/csp/api/dc/fhirfy/generate-module', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

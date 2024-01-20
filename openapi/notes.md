@@ -22,11 +22,11 @@ CREATE dc.jrpereira.fhirfy.api.impl
 REST application successfully created.
 
 Create a web application for the REST application? Y or N (Y): y
-Specify a web application name beginning with a single '/'. Default is /csp/dc/jrpereira/fhirfy/api
-Web application name: /csp/dc/jrpereira/fhirfy/api
+Specify a web application name beginning with a single '/'. Default is /csp/api/dc/fhirfy
+Web application name: /csp/api/dc/fhirfy
 
 -----Deploying REST application: dc.jrpereira.fhirfy.api-----
-Application dc.jrpereira.fhirfy.api deployed to /csp/dc/jrpereira/fhirfy/api
+Application dc.jrpereira.fhirfy.api deployed to /csp/api/dc/fhirfy
 ```
 
 ```
