@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+body {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #005294;
+}
+    </style>
+
+    <title>FHIRfy - Analyze Data</title>
+</head>
+
+<body>
+    <textarea id="markdownInput" placeholder="Enter Markdown content">
+        Patient ID,Patient Name\n1,Patient 1\n2,Patient 2
+    </textarea>
+    <button id="analyzeButton">Analyze Data</button>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+
+        document.getElementById('analyzeButton').addEventListener('click', () => {
+            const markdownContent = document.getElementById('markdownInput').value;
+            vscode.postMessage({
+                command: 'analyzeData',
+                text: markdownContent
+            });
+        });
+    </script>
+</body>
+
+</html>
