@@ -1,4 +1,4 @@
-Class dc.jrpereira.fhirfy.mock.simplecsv.MockData.RawDataAnalyzer Extends dc.jrpereira.fhirfy.core.RawDataAnalyzer
+Class dc.jrpereira.fhirfy.mock.simplecsv.RawDataAnalyzer Extends dc.jrpereira.fhirfy.core.RawDataAnalyzer
 {
 
 Method GetLLMResponse(input) As %String [ Language = python ]
