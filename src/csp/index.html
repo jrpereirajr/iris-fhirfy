@@ -14,6 +14,17 @@
 
 <body>
     <div class="container">
+        <div id="settings-container" class="hidden">
+            <form id="settings-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="_SYSTEM">
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="SYS">
+
+                <button type="button" onclick="saveSettings()">Save</button>
+            </form>
+        </div>
         <div class="header">
             <div class="logo" >FHIR<span class="fy-box">fy</span></div>
             <div class="header-buttons">
@@ -37,9 +48,12 @@
                 </p>
                 <h3>🚀 Use Mock Data (Optional)</h3>
                 <p>
-                    <ul>
-                        <li>Don't have real data? No worries! Choose the option to use mock data for a sample analysis.</li>
-                    </ul>
+                    <p>Don't have real data? No worries! Choose the option to use mock data for a sample analysis.</p>
+                    <label for="mockName">Select Mock Data:</label>
+                    <select id="mockName">
+                        <option value="" selected>No Mock</option>
+                        <option value="simple-csv">Simple CSV</option>
+                    </select>
                 </p>
             </div>
 

@@ -162,7 +162,7 @@ button:hover {
 
 #card-container {
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     max-width: 80%;
@@ -204,4 +204,25 @@ button:hover {
 
 .dot.active {
     background-color: #2D3250;
+}
+
+#settings-container {
+    display: none;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+#settings-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none;
 }

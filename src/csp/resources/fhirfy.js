@@ -19,6 +19,7 @@ const simulateTypingAnimation = (text, btn, container) => {
 
 const addResponseToChat = (responseTextContent, btn, container) => {
     const newResponseDiv = document.createElement('div'),
+        chatContainer = document.getElementById('chatContainer'),
         rawData = !!!container ? '' : container.textContent;
     newResponseDiv.className = 'response-text';
     newResponseDiv.innerHTML = marked.marked(responseTextContent);
@@ -58,8 +59,6 @@ const generateModelButton = (responseTextContent, rawData) => {
     return genModelDiv;
 }
 
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const themeSwitch = document.getElementById('themeSwitch'),
         markdownInput = document.getElementById('markdownInput'),
@@ -77,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     submitButton.addEventListener('click', () => {
         document.getElementById('card-container').style.transform = 'translateX(-300%)';
+        document.getElementById('card-container').style.display = 'none';
  
         const markdownText = markdownInput.value,
             responseDiv = document.createElement('div'),
@@ -88,10 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
         chatContainer.insertBefore(responseDiv, document.querySelector('#responseContainer'));
         submitButton.appendChild(spinnerIcon);
 
-        fetch('/csp/api/dc/fhirfy/analyze-data', {
+        const username = document.getElementById('username').value,
+            password = document.getElementById('password').value,
+            mockName = document.getElementById('mockName').value;
+        fetch(`/csp/api/dc/fhirfy/analyze-data${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(`${username}:${password}`) 
             },
             body: JSON.stringify({ input: { rawData: markdownText } })
         })
@@ -109,43 +113,60 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.code === 'Semicolon') {
+        console.log('settings');
+        toggleSettingsForm();
+    }
+});
+
+const toggleSettingsForm = () => {
+    document.getElementById('settings-container').classList.toggle('hidden');
+}
+
+const saveSettings = () => {
+    toggleSettingsForm(); 
+}
+
 suggestImplementation = (request) => {
-    // Make a request to the suggest-solution API endpoint
-    fetch('/csp/api/dc/fhirfy/suggest-solution', {
+    const username = document.getElementById('username').value,
+        password = document.getElementById('password').value,
+        mockName = document.getElementById('mockName').value;
+    fetch(`/csp/api/dc/fhirfy/suggest-solution${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(`${username}:${password}`)
         },
         body: request
     })
     .then(response => response.json())
     .then(data => {
-      // Handle the response from the suggest-solution endpoint
         console.log('Suggested implementation:', data);
         simulateTypingAnimation(`${data.name}\n${data.description}`, 'model');
     })
     .catch(error => {
-      // Handle errors
         console.error('Error suggesting implementation:', error);
     });
 }
 
 generateModel = (request) => {
-    // Make a request to the suggest-solution API endpoint
-    fetch('/csp/api/dc/fhirfy/generate-module', {
+    const username = document.getElementById('username').value,
+        password = document.getElementById('password').value,
+        mockName = document.getElementById('mockName').value;
+    fetch(`/csp/api/dc/fhirfy/generate-module${ !!!mockName ? '': `?mockName=${mockName}`}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + btoa(`${username}:${password}`)
         },
         body: request
     })
     .then(response => response.json())
     .then(data => {
-      // Handle the response from the suggest-solution endpoint
         console.log('generated module:', data);
     })
     .catch(error => {
-      // Handle errors
         console.error('Error generating module:', error);
     });
 }
