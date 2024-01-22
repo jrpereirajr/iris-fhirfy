@@ -1,17 +1,17 @@
 Class dc.jrpereira.fhirfy.core.API Extends %RegisteredObject
 {
 
-Property Analyzer As RawDataAnalyzer;
+Property Analyzer As dc.jrpereira.fhirfy.core.RawDataAnalyzer;
 
-Property SolutionGenerator As SolutionGenerator;
+Property SolutionGenerator As dc.jrpereira.fhirfy.core.SolutionGenerator;
 
-Property ModuleGenerator As SolutionModuleGenerator;
+Property ModuleGenerator As dc.jrpereira.fhirfy.core.SolutionModuleGenerator;
 
 Method %OnNew() As %Status
 {
-    Set ..Analyzer = ##class(RawDataAnalyzer).%New()
-    Set ..SolutionGenerator = ##class(SolutionGenerator).%New()
-    Set ..ModuleGenerator = ##class(SolutionModuleGenerator).%New()
+    Set ..Analyzer = ##class(dc.jrpereira.fhirfy.core.RawDataAnalyzer).%New()
+    Set ..SolutionGenerator = ##class(dc.jrpereira.fhirfy.core.SolutionGenerator).%New()
+    Set ..ModuleGenerator = ##class(dc.jrpereira.fhirfy.core.SolutionModuleGenerator).%New()
     Return $$$OK
 }
 

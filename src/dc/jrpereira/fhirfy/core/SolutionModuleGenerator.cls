@@ -14,18 +14,10 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     import xmltodict
     import json
     import iris
+    
+    input = dataInput._Get("input")
+    xmlData = self.GetLLMResponse(input)
 
-    #; xmlData = iris.cls("dc.jrpereira.fhirfy.mock.SimpleCSV").GetSolutionModuleGeneratorMockData()
-
-    prompt = self.GetSystemPrompt(dataInput._Get("input"))
-    try:
-        xmlData = self.llm.SendPrompt(prompt)
-    except ValueError as e:
-        if str(e).find("This response is not simple text.Use the `result.parts` accessor or the full `result.candidates[index].content.parts` lookup instead") != -1:
-            raise Exception("Your prompt seems to let the LLM to produce a very long response, which was denied. Prompt: " + str(e))
-        raise e
-    except Exception as e:
-        raise e
     xmlData = xmlData.replace("```xml", "")
     xmlData = xmlData.replace("```", "")
     #; xmlData = xmlData.replace("                ", "")
@@ -43,6 +35,20 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     self.CreateSolutionModuleWrapper(result)
 
     return result
+}
+
+Method GetLLMResponse(input) As %String [ Language = python ]
+{
+    prompt = self.GetSystemPrompt(input)
+    try:
+        xmlData = self.llm.SendPrompt(prompt)
+    except ValueError as e:
+        if str(e).find("This response is not simple text.Use the `result.parts` accessor or the full `result.candidates[index].content.parts` lookup instead") != -1:
+            raise Exception("Your prompt seems to let the LLM to produce a very long response, which was denied. Prompt: " + str(e))
+        raise e
+    except Exception as e:
+        raise e
+    return xmlData
 }
 
 Method GetSystemPrompt(data) As %String [ Language = python ]

@@ -14,19 +14,23 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     import xmltodict
     import json
 
-    #; import iris
-    #; raw = iris.cls("dc.jrpereira.fhirfy.mock.SimpleCSV").GetSolutionGeneratorMockData()
-
-    prompt = self.GetSystemPrompt(dataInput._Get("input"))
-    xmlData = self.llm.SendPrompt(prompt)
+    input = dataInput._Get("input")
+    xmlData = self.GetLLMResponse(input)
+    
     xmlData = xmlData.replace("```xml", "")
     xmlData = xmlData.replace("```", "")
-    
     try:
         result = xmltodict.parse(xmlData)
     except Exception as e:
         raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
     return json.dumps(result)
+}
+
+Method GetLLMResponse(input) As %String [ Language = python ]
+{
+    prompt = self.GetSystemPrompt(input)
+    xmlData = self.llm.SendPrompt(prompt)
+    return xmlData
 }
 
 Method GetSystemPrompt(data) As %String [ Language = python ]

@@ -40,6 +40,12 @@ XData OpenAPI [ MimeType = application/json ]
             "schema":{
               "$ref":"#/definitions/AnalysisInput"
             }
+          },
+          {
+            "name":"mockName",
+            "in":"query",
+            "type":"string",
+            "required":false
           }
         ],
         "responses":{
@@ -71,6 +77,12 @@ XData OpenAPI [ MimeType = application/json ]
             "schema":{
               "$ref":"#/definitions/SolutionSuggestionInput"
             }
+          },
+          {
+            "name":"mockName",
+            "in":"query",
+            "type":"string",
+            "required":false
           }
         ],
         "responses":{
@@ -102,6 +114,12 @@ XData OpenAPI [ MimeType = application/json ]
             "schema":{
               "$ref":"#/definitions/GenerateModuleRequest"
             }
+          },
+          {
+            "name":"mockName",
+            "in":"query",
+            "type":"string",
+            "required":false
           }
         ],
         "responses":{
@@ -118,10 +136,7 @@ XData OpenAPI [ MimeType = application/json ]
       "get":{
         "operationId":"mockSimpleCSV",
         "summary":"Mock data for a simple CSV as input",
-        "description":"Get the mock data for sample of system process of a simple CSV containg basic patient infor.",
-        "consumes":[
-          "application/json"
-        ],
+        "description":"Get the mock data for sample of system process of a simple CSV containg basic patient information.",
         "produces":[
           "application/json"
         ],
@@ -130,6 +145,24 @@ XData OpenAPI [ MimeType = application/json ]
             "description":"Successful solution suggestion response",
             "schema":{
               "$ref":"#/definitions/MockDataResponse"
+            }
+          }
+        }
+      }
+    },
+    "/_spec":{
+      "get":{
+        "operationId":"getOpenAPISpec",
+        "summary":"Return the OpenAPI 2.0 specification",
+        "description":"Return the OpenAPI 2.0 specification.",
+        "produces":[
+          "application/json"
+        ],
+        "responses":{
+          "200":{
+            "description":"Successful solution suggestion response",
+            "schema":{
+              "type":"object"
             }
           }
         }

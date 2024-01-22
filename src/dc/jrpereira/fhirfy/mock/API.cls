@@ -1,18 +1,13 @@
-Class dc.jrpereira.fhirfy.mock.API Extends %RegisteredObject
+Class dc.jrpereira.fhirfy.mock.API Extends dc.jrpereira.fhirfy.core.API
 {
 
-Property SimpleCSV As dc.jrpereira.fhirfy.mock.SimpleCSV;
-
-Method %OnNew() As %Status
+ClassMethod GetInstance(mockName As %String) As dc.jrpereira.fhirfy.mock.API
 {
-    Set ..SimpleCSV = ##class(dc.jrpereira.fhirfy.mock.SimpleCSV).%New()
-    Return $$$OK
-}
-
-Method GetSimpleCSVMockData() As %DynamicObject
-{
-    Set module = ..SimpleCSV.GetResponse()
-    Return module
+    If (mockName = "simple-csv") {
+        Return ##class(dc.jrpereira.fhirfy.mock.simplecsv.API).%New()
+    } Else {
+        Throw ##class(%Exception.General).%New("Mock not found")
+    }
 }
 
 }

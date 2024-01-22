@@ -25,6 +25,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/generate-module" Method="post" Call="generateModule" />
   <!-- Mock data for a simple CSV as input -->
   <Route Url="/mock/simple-csv" Method="get" Call="mockSimpleCSV" />
+  <!-- Return the OpenAPI 2.0 specification -->
+  <Route Url="/_spec" Method="get" Call="getOpenAPISpec" />
 </Routes>
 }
 
@@ -37,7 +39,13 @@ ClassMethod analyzeData() As %Status
         If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"input")) Quit
         Set pinput=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
-        Set response=##class(dc.jrpereira.fhirfy.api.impl).analyzeData(pinput)
+        If $data(%request.Data("mockName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"mockName")) Quit
+        }
+        If $data(%request.Data("mockName",1)) {
+            Set pmockName=%request.Data("mockName",1)
+        }
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).analyzeData(pinput,.pmockName)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
@@ -55,7 +63,13 @@ ClassMethod suggestSolution() As %Status
         If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"input")) Quit
         Set pinput=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
-        Set response=##class(dc.jrpereira.fhirfy.api.impl).suggestSolution(pinput)
+        If $data(%request.Data("mockName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"mockName")) Quit
+        }
+        If $data(%request.Data("mockName",1)) {
+            Set pmockName=%request.Data("mockName",1)
+        }
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).suggestSolution(pinput,.pmockName)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
@@ -73,7 +87,13 @@ ClassMethod generateModule() As %Status
         If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"input")) Quit
         Set pinput=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
-        Set response=##class(dc.jrpereira.fhirfy.api.impl).generateModule(pinput)
+        If $data(%request.Data("mockName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"mockName")) Quit
+        }
+        If $data(%request.Data("mockName",1)) {
+            Set pmockName=%request.Data("mockName",1)
+        }
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).generateModule(pinput,.pmockName)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
@@ -89,6 +109,21 @@ ClassMethod mockSimpleCSV() As %Status
         Do ##class(%REST.Impl).%SetContentType("application/json")
         If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         Set response=##class(dc.jrpereira.fhirfy.api.impl).mockSimpleCSV()
+        Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
+        Do ..LogInBackground(ex)
+    }
+    Quit $$$OK
+}
+
+/// Return the OpenAPI 2.0 specification
+ClassMethod getOpenAPISpec() As %Status
+{
+    Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).getOpenAPISpec()
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
