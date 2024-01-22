@@ -111,9 +111,10 @@ button:hover {
 .response-text {
     font-family: 'Courier New', monospace;
     white-space: pre-wrap;
+    width: 100%;
     overflow: hidden;
     border-right: 2px solid #fff;
-    font-size: 1.2em;
+    font-size: 0.9em;
     display: inline-block;
     vertical-align: bottom;
     animation: typing 3s steps(40) infinite;
@@ -159,7 +160,6 @@ button:hover {
     margin-right: 5px;
 }
 
-
 #card-container {
     position: absolute;
     top: 30%;
@@ -173,6 +173,11 @@ button:hover {
     overflow: hidden;
     transition: transform 0.3s ease-in-out;
     position: relative; /* Added position relative */
+}
+
+.dark-theme #card-container {
+    background-color: #424769;
+    color: #fff;
 }
 
 .instruction-card {

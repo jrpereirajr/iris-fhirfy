@@ -1,4 +1,4 @@
-const simulateTypingAnimation = (text, btn, container) => {
+const simulateTypingAnimation = (text, btn, container, req) => {
     const typingSpeed = 15; // Adjust speed as needed
     let index = 0;
     if (text.length === 0) return;
@@ -10,7 +10,7 @@ const simulateTypingAnimation = (text, btn, container) => {
             index++;
             setTimeout(type, typingSpeed);
         } else {
-            addResponseToChat(responseText.textContent, btn, container);
+            addResponseToChat(responseText.textContent, btn, container, req);
             responseText.innerHTML = '';
         }
     }
@@ -18,16 +18,16 @@ const simulateTypingAnimation = (text, btn, container) => {
     type();
 }
 
-const addResponseToChat = (responseTextContent, btn, container) => {
+const addResponseToChat = (responseTextContent, btn, container, req) => {
     const newResponseDiv = document.createElement('div'),
         chatContainer = document.getElementById('chatContainer'),
         rawData = !!!container ? '' : container.textContent;
     newResponseDiv.className = 'response-text';
-    newResponseDiv.innerHTML = marked.marked(responseTextContent);
+    newResponseDiv.innerHTML = marked.marked(responseTextContent).replace(/```/g, '<pre>');
 
-    let button = (btn === 'suggest') ? suggestButton(responseTextContent, rawData) : (btn === 'model') ? generateModelButton() : '';
+    let button = (btn === 'suggest') ? suggestButton(responseTextContent, rawData) : (btn === 'model') ? generateModelButton(req) : '';
 
-    newResponseDiv.appendChild(button);
+    button !== '' ? newResponseDiv.appendChild(button) : '';
 
     if (!!!container) {
         chatContainer.insertBefore(newResponseDiv, document.getElementById('responseContainer'));
@@ -48,13 +48,13 @@ const suggestButton = (responseTextContent, rawData) => {
     return suggestDiv;
 }
 
-const generateModelButton = (responseTextContent, rawData) => {
+const generateModelButton = (request) => {
     const genModelDiv = document.createElement('div'), 
         genModelButton = document.createElement('button');
     genModelButton.className = 'gen-model-button';
     genModelButton.textContent = 'Generate Model';
     genModelButton.addEventListener('click', () => {
-        suggestImplementation({"analysis": responseTextContent, "rawData": rawData}, 'model');
+        generateModel(request, 'model');
     });
     genModelDiv.appendChild(genModelButton);
     return genModelDiv;
@@ -151,8 +151,8 @@ suggestImplementation = (request) => {
         if (data.solutionSuggestion.hasOwnProperty("subModules")) data.solutionSuggestion.subModules.subModule.forEach((submodule) => {
             suggestion += `\n\n### ${submodule.name}\n${submodule.description}`
         })
-        suggestion += !!!data.solutionSuggestion.pseudoCode ? '' : `\n## Pseudo Code\n\`\`\`\n ${data.solutionSuggestion.pseudoCode}\`\`\`\n`	
-        simulateTypingAnimation(suggestion, 'model');
+        suggestion += !!!data.solutionSuggestion.pseudoCode ? '' : `\n## Pseudo Code\n\`\`\`\n ${data.solutionSuggestion.pseudoCode}\n\`\`\`\n`	
+        simulateTypingAnimation(suggestion, 'model', null, data.solutionSuggestion);
     })
     .catch(error => {
         console.error('Error suggesting implementation:', error);
@@ -169,11 +169,18 @@ generateModel = (request) => {
             'Content-Type': 'application/json',
             'Authorization': 'Basic ' + btoa(`${username}:${password}`)
         },
-        body: request
+        body: JSON.stringify(request)
     })
     .then(response => response.json())
     .then(data => {
         console.log('generated module:', data);
+
+        if (!!!data) return console.log('No implementation found');
+        gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n`;
+        if (data.hasOwnProperty("files")) data.files.forEach((file) => {
+            gen_module += `\n#### ${file.name}\n${!!!file.description ? '' : file.description}\n\`\`\`\n ${file["source-code"]}\n\`\`\`\n`
+        })
+        simulateTypingAnimation(gen_module, null);
     })
     .catch(error => {
         console.error('Error generating module:', error);

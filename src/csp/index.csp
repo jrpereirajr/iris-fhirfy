@@ -40,12 +40,8 @@
                     Welcome to FHIRfy, your intelligent FHIR data analysis companion.
                 </p>
                 <h3>📝 Configure LLM API Key</h3>
-                <p>
-                    <ul>
-                        <li>Before you start, make sure to configure your LLM API key on server for enhanced analysis.</li>
-                        <li>Visit the server settings to input your ChatGPT or Gemini API key.</li>
-                    </ul>
-                </p>
+                <p>Before you start, make sure to configure your LLM API key on server for enhanced analysis.</p>
+                <p>Visit the server settings to input your ChatGPT or Gemini API key.</p>
                 <h3>🚀 Use Mock Data (Optional)</h3>
                 <p>
                     <p>Don't have real data? No worries! Choose the option to use mock data for a sample analysis.</p>
