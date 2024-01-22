@@ -1,6 +1,7 @@
 const simulateTypingAnimation = (text, btn, container) => {
-    const typingSpeed = 30; // Adjust speed as needed
+    const typingSpeed = 15; // Adjust speed as needed
     let index = 0;
+    if (text.length === 0) return;
 
     const type = () => {
         responseText.textContent = text.slice(0, index);
@@ -132,18 +133,26 @@ suggestImplementation = (request) => {
     const username = document.getElementById('username').value,
         password = document.getElementById('password').value,
         mockName = document.getElementById('mockName').value;
+    console.log(request);
+
     fetch(`/csp/api/dc/fhirfy/suggest-solution${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + btoa(`${username}:${password}`)
         },
-        body: request
+        body: JSON.stringify(request)
     })
     .then(response => response.json())
     .then(data => {
         console.log('Suggested implementation:', data);
-        simulateTypingAnimation(`${data.name}\n${data.description}`, 'model');
+        if (!!!data.solutionSuggestion) return console.log('No implementation found');
+        let suggestion = `## ${data.solutionSuggestion.name}\n${data.solutionSuggestion.description}`;
+        if (data.solutionSuggestion.hasOwnProperty("subModules")) data.solutionSuggestion.subModules.subModule.forEach((submodule) => {
+            suggestion += `\n\n### ${submodule.name}\n${submodule.description}`
+        })
+        suggestion += !!!data.solutionSuggestion.pseudoCode ? '' : `\n## Pseudo Code\n\`\`\`\n ${data.solutionSuggestion.pseudoCode}\`\`\`\n`	
+        simulateTypingAnimation(suggestion, 'model');
     })
     .catch(error => {
         console.error('Error suggesting implementation:', error);
