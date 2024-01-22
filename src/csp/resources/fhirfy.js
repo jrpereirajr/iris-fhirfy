@@ -1,7 +1,7 @@
 const simulateTypingAnimation = (text, btn, container, req) => {
     const typingSpeed = 15; // Adjust speed as needed
     let index = 0;
-    if (text.length === 0) return;
+    if (!!!text || text.length === 0) return;
 
     const type = () => {
         responseText.textContent = text.slice(0, index);
@@ -76,12 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     submitButton.addEventListener('click', () => {
-        document.getElementById('card-container').style.transform = 'translateX(-300%)';
-        document.getElementById('card-container').style.display = 'none';
- 
         const markdownText = markdownInput.value,
             responseDiv = document.createElement('div'),
             userPromptDiv = document.createElement('div');
+        if (markdownText.length < 1) return
+
+        document.getElementById('card-container').style.transform = 'translateX(-300%)';
+        document.getElementById('card-container').style.display = 'none';
+ 
         userPromptDiv.className = 'user-prompt';
         responseDiv.className = 'response-prompt';
         userPromptDiv.textContent = markdownInput.value;
