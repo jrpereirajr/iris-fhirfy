@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-...." crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-...." crossorigin="anonymous" />
     <link rel="stylesheet" href="resources/style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <title>FHIRfy</title>
@@ -13,12 +15,53 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">FHIR<span class="fy-box">fy</span></div>
+            <div class="logo" >FHIR<span class="fy-box">fy</span></div>
             <div class="header-buttons">
                 <button id="themeSwitch" class="theme-switch">
                     <i id="themeIcon" class="fas fa-moon button-icon"></i>
                 </button>
             </div>
+        </div>
+        <div id="card-container">
+            <div id="instructions-card-1" class="instruction-card">
+                <div class="logo" style="display:block">FHIR<span class="fy-box">fy</span></div>
+                <p>
+                    Welcome to FHIRfy, your intelligent FHIR data analysis companion.
+                </p>
+                <h3>📝 Configure LLM API Key</h3>
+                <p>
+                    <ul>
+                        <li>Before you start, make sure to configure your LLM API key on server for enhanced analysis.</li>
+                        <li>Visit the server settings to input your ChatGPT or Gemini API key.</li>
+                    </ul>
+                </p>
+                <h3>🚀 Use Mock Data (Optional)</h3>
+                <p>
+                    <ul>
+                        <li>Don't have real data? No worries! Choose the option to use mock data for a sample analysis.</li>
+                    </ul>
+                </p>
+            </div>
+
+            <div id="instructions-card-2" class="instruction-card">
+                <h3>Step 1 - Input Raw Data Card 📝</h3>
+                <p>🌟 In the provided textarea, enter your raw data in Markdown format.</p>
+                <p>Example:</p>
+                <pre>Patient ID,Patient Name\n1,Patient 1\n2,Patient 2</pre>
+            </div>
+
+            <div id="instructions-card-3" class="instruction-card">
+                <h3>Step 2 - Get Analysis Report 🕵️‍♂️</h3>
+                <p>Click "Analyze Data" to receive an analysis report.</p>
+                <p>If you need solutions, click "Suggest Implementation."</p>
+            </div>
+        
+            <div id="instructions-card-4" class="instruction-card">
+                <h3>Step 3 - Generate Code 🚧</h3>
+                <p>Generate code for a chosen solution as a ZPM module.</p>
+            </div>
+        
+            <div id="instruction-dots"></div>
         </div>
         <div class="chat-container" id="chatContainer">
 

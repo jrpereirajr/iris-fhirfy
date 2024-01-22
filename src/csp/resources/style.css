@@ -158,3 +158,50 @@ button:hover {
 .button-icon {
     margin-right: 5px;
 }
+
+
+#card-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+    position: relative; /* Added position relative */
+}
+
+.instruction-card {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+#instructions-card-1 {
+    display: block;
+}
+
+#instruction-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.dot.active {
+    background-color: #2D3250;
+}

@@ -76,6 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     submitButton.addEventListener('click', () => {
+        document.getElementById('card-container').style.transform = 'translateX(-300%)';
+ 
         const markdownText = markdownInput.value,
             responseDiv = document.createElement('div'),
             userPromptDiv = document.createElement('div');
