@@ -5,7 +5,14 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
     console.log('FHIRfy Extension is now active!');
 
-    // Create and show a new WebviewPanel
+    const endpoint = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('endpoint', '/csp/api/fhirfy'),
+        host = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('host', 'localhost'),
+        port = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('port', 32783),
+        username = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('username', '_SYSTEM'),
+        password = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('password', 'SYS');
+
+    console.log(`Configured endpoint: ${endpoint}, host: ${host}, port: ${port}, username: ${username}, password: ${password}`);
+
     const panel = vscode.window.createWebviewPanel(
         'fhirfy',
         'FHIRfy Analyze',

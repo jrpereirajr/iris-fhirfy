@@ -5,50 +5,224 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: space-between;
+        }
 
-body {
-    font-family: 'Arial', sans-serif;
-    padding: 20px;
-    text-align: center;
-}
+        textarea {
+            width: 100%;
+            height: calc(100% - 20px); /* Adjust height for padding */
+            margin-bottom: 20px;
+            resize: none;
+        }
 
-textarea {
-    width: 100%;
-    height: 200px;
-    margin-bottom: 20px;
-}
+        button {
+            padding: 10px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
 
-button {
-    padding: 10px;
-    background-color: #007acc;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
+        button:hover {
+            background-color: #005294;
+        }
 
-button:hover {
-    background-color: #005294;
-}
+
+        @keyframes typing {
+            from,
+            to {
+                border-right: 2px solid transparent;
+            }
+
+            50%,
+            90% {
+                border-right: 2px solid #000;
+            }
+        }
+
     </style>
 
     <title>FHIRfy - Analyze Data</title>
 </head>
 
 <body>
-    <textarea id="markdownInput" placeholder="Enter Markdown content">
-        Patient ID,Patient Name\n1,Patient 1\n2,Patient 2
-    </textarea>
-    <button id="analyzeButton">Analyze Data</button>
+    <div class="container">
+        <div id="card-container">
+            <div id="instructions-card-1" class="instruction-card">
+                <div class="logo" style="display:block">FHIR<span class="fy-box">fy</span></div>
+                <p>
+                    Welcome to FHIRfy, your intelligent FHIR data analysis companion.
+                </p>
+                <h3>📝 Configure LLM API Key</h3>
+                <p>Before you start, make sure to configure your LLM API key on server for enhanced analysis.</p>
+                <p>Visit the server settings to input your ChatGPT or Gemini API key.</p>
+                <h3>🚀 Use Mock Data (Optional)</h3>
+                <p>
+                    <p>Don't have real data? No worries! Choose the option to use mock data for a sample analysis.</p>
+                    <label for="mockName">Select Mock Data:</label>
+                    <select id="mockName">
+                        <option value="" selected>No Mock</option>
+                        <option value="simple-csv">Simple CSV</option>
+                    </select>
+                </p>
+            </div>
 
+            <div id="instructions-card-2" class="instruction-card">
+                <h3>Step 1 - Input Raw Data Card 📝</h3>
+                <p>🌟 In the provided textarea, enter your raw data in Markdown format.</p>
+                <p>Example:</p>
+                <pre>Patient ID,Patient Name\n1,Patient 1\n2,Patient 2</pre>
+            </div>
+
+            <div id="instructions-card-3" class="instruction-card">
+                <h3>Step 2 - Get Analysis Report 🕵️‍♂️</h3>
+                <p>Click "Analyze Data" to receive an analysis report.</p>
+                <p>If you need solutions, click "Suggest Implementation."</p>
+            </div>
+        
+            <div id="instructions-card-4" class="instruction-card">
+                <h3>Step 3 - Generate Code 🚧</h3>
+                <p>Generate code for a chosen solution as a ZPM module.</p>
+            </div>
+        
+        </div>
+        <div class="chat-container" id="chatContainer">
+
+            <div id="responseContainer" class="response-container">
+                <p id="responseText" class="response-text"></p>
+            </div>
+        </div>
+        <div class="bottom-bar">
+            <textarea id="markdownInput" placeholder="Enter your data to analyse..."></textarea>
+            <button id="analyzeButton">Analyse it!</button>
+        </div>
+    </div>
     <script>
-        const vscode = acquireVsCodeApi();
+        console.log('everything is ok');
 
-        document.getElementById('analyzeButton').addEventListener('click', () => {
-            const markdownContent = document.getElementById('markdownInput').value;
-            vscode.postMessage({
-                command: 'analyzeData',
-                text: markdownContent
-            });
+            /*
+            const endpoint = vscode.getState().endpoint || '/csp/api/fhirfy',
+                host = vscode.getState().host || 'localhost',
+                port = vscode.getState().port || 32783,
+                username = vscode.getState().username || '_SYSTEM',
+                password = vscode.getState().password || 'SYS';
+                */
+        const vscode = acquireVsCodeApi(),
+            endpoint = '/csp/api/fhirfy',
+            host = 'localhost',
+            port = 32783,
+            username = '_SYSTEM',
+            password = 'SYS',
+            apiUrl = `http://${host}:${port}${endpoint}`;
+        /*
+        document.body.addEventListener('click', (event) => {
+            if (event.target.id === 'analyzeButton') {
+                console.log('test');
+            }
+        });
+    */
+
+        document.getElementById('analyzeButton').addEventListener('click', async () => {
+            const markdownContent = document.getElementById('markdownInput').value.trim();
+
+            // Check if the textarea is empty
+            if (markdownContent.length < 1) {
+                console.log('Textarea cannot be empty. Please enter data for analysis.');
+                return;
+            }
+
+            try {
+                document.getElementById('card-container').style.display = 'none';
+                document.getElementById('markdownInput').innerText = markdownContent;
+                document.getElementById('responseText').innerText = '';
+                const mockName = document.getElementById('mockName').value;
+
+                
+                //const response = await fetch(`${apiUrl}/analyze-data${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
+                const response = await fetch(`http://localhost:32783/csp/api/dc/fhirfy/analyze-data${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+                    },
+                    body: JSON.stringify({
+                        input: {
+                            rawData: markdownContent
+                        }
+                    })
+                });
+
+                // Check if the request was successful (status code 200)
+                if (response.ok) {
+                    // Parse the JSON response
+                    const result = await response.json();
+                    console.log('ok ');
+
+                    // Display the analysis result
+                    document.getElementById('analysisResult').innerText = result.markdownResponse;
+
+                    // Display Suggest Implementation button
+                    //document.getElementById('suggestButtonContainer').style.display = 'flex';
+                } else {
+                    // Handle error cases
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        document.getElementById('suggestButton').addEventListener('click', async () => {
+            const markdownContent = document.getElementById('markdownInput').value.trim();
+            const analysisResultContent = document.getElementById('analysisResult').innerText.trim();
+
+            // Construct the URL for the suggest-solution endpoint
+            const suggestApiUrl = `http://${host}:${port}/suggest-solution`;
+
+            try {
+                // Display typing animation while waiting for the response
+                document.getElementById('suggestButtonContainer').style.display = 'none';
+                document.getElementById('suggestResultContainer').style.display = 'flex';
+                document.getElementById('suggestResultContainer').innerText = 'Suggesting implementation...';
+
+                // Make a POST request to the suggest-solution endpoint
+                const suggestResponse = await fetch(suggestApiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+                    },
+                    body: JSON.stringify({
+                        input: {
+                            rawData: markdownContent,
+                            analysis: analysisResultContent
+                        }
+                    })
+                });
+
+                // Check if the request was successful (status code 200)
+                if (suggestResponse.ok) {
+                    // Parse the JSON response
+                    const suggestResult = await suggestResponse.json();
+
+                    // Display the suggested implementation result
+                    document.getElementById('suggestResultContainer').innerText = suggestResult.solutionSuggestion.description;
+                } else {
+                    // Handle error cases
+                    console.error('Error:', suggestResponse.statusText);
+                    document.getElementById('suggestResultContainer').innerText = 'Error suggesting implementation.';
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+                document.getElementById('suggestResultContainer').innerText = 'Error suggesting implementation.';
+            }
         });
     </script>
 </body>

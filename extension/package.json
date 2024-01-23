@@ -24,6 +24,36 @@
                     "when": "resourceLangId == fhir"
                 }
             ]
+        },
+        "configuration": {
+            "title": "FHIRfy Analyzer",
+            "properties": {
+                "fhirfyAnalyzer.endpoint": {
+                    "type": "string",
+                    "default": "/csp/api/fhirfy",
+                    "description": "The endpoint root for the FHIRfy Analyzer services"
+                },
+                "fhirfyAnalyzer.host": {
+                    "type": "string",
+                    "default": "localhost",
+                    "description": "The host for the FHIRfy Analyzer server"
+                },
+                "fhirfyAnalyzer.port": {
+                    "type": "number",
+                    "default": 32783,
+                    "description": "The port for the FHIRfy Analyzer server"
+                },
+                "fhirfyAnalyzer.username": {
+                    "type": "string",
+                    "default": "_SYSTEM",
+                    "description": "The username for the FHIRfy Analyzer server"
+                },
+                "fhirfyAnalyzer.password": {
+                    "type": "string",
+                    "default": "SYS",
+                    "description": "The password for the FHIRfy Analyzer server"
+                }
+            }
         }
     },
     "keybindings": [
