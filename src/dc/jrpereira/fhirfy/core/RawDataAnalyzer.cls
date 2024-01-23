@@ -14,12 +14,10 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     import xmltodict
     import json
 
-    #; import iris
-    #; xmlData = iris.cls("dc.jrpereira.fhirfy.unittests.core.MocksData").GetRawDataAnalyzerMockData()
-    
-    rawData = dataInput._Get("input")._Get("rawData")
-    prompt = self.GetSystemPrompt(rawData)
-    xmlData = self.llm.SendPrompt(prompt)
+    input = dataInput._Get("input")
+    rawData = input._Get("rawData")
+    xmlData = self.GetLLMResponse(rawData)
+
     try:
         result = xmltodict.parse(xmlData)["result"]
     except Exception as e:
@@ -28,6 +26,13 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     result = {"markdownResponse": result}
     result = json.dumps(result)
     return result
+}
+
+Method GetLLMResponse(input) As %String [ Language = python ]
+{
+    prompt = self.GetSystemPrompt(input)
+    xmlData = self.llm.SendPrompt(prompt)
+    return xmlData
 }
 
 Method GetSystemPrompt(data) As %String [ Language = python ]

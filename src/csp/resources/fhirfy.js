@@ -1,6 +1,7 @@
-const simulateTypingAnimation = (text, btn, container) => {
-    const typingSpeed = 30; // Adjust speed as needed
+const simulateTypingAnimation = (text, btn, container, req) => {
+    const typingSpeed = 15; // Adjust speed as needed
     let index = 0;
+    if (!!!text || text.length === 0) return;
 
     const type = () => {
         responseText.textContent = text.slice(0, index);
@@ -9,7 +10,7 @@ const simulateTypingAnimation = (text, btn, container) => {
             index++;
             setTimeout(type, typingSpeed);
         } else {
-            addResponseToChat(responseText.textContent, btn, container);
+            addResponseToChat(responseText.textContent, btn, container, req);
             responseText.innerHTML = '';
         }
     }
@@ -17,15 +18,16 @@ const simulateTypingAnimation = (text, btn, container) => {
     type();
 }
 
-const addResponseToChat = (responseTextContent, btn, container) => {
+const addResponseToChat = (responseTextContent, btn, container, req) => {
     const newResponseDiv = document.createElement('div'),
+        chatContainer = document.getElementById('chatContainer'),
         rawData = !!!container ? '' : container.textContent;
     newResponseDiv.className = 'response-text';
-    newResponseDiv.innerHTML = marked.marked(responseTextContent);
+    newResponseDiv.innerHTML = marked.marked(responseTextContent).replace(/```/g, '<pre>');
 
-    let button = (btn === 'suggest') ? suggestButton(responseTextContent, rawData) : (btn === 'model') ? generateModelButton() : '';
+    let button = (btn === 'suggest') ? suggestButton(responseTextContent, rawData) : (btn === 'model') ? generateModelButton(req) : '';
 
-    newResponseDiv.appendChild(button);
+    button !== '' ? newResponseDiv.appendChild(button) : '';
 
     if (!!!container) {
         chatContainer.insertBefore(newResponseDiv, document.getElementById('responseContainer'));
@@ -46,19 +48,17 @@ const suggestButton = (responseTextContent, rawData) => {
     return suggestDiv;
 }
 
-const generateModelButton = (responseTextContent, rawData) => {
+const generateModelButton = (request) => {
     const genModelDiv = document.createElement('div'), 
         genModelButton = document.createElement('button');
     genModelButton.className = 'gen-model-button';
     genModelButton.textContent = 'Generate Model';
     genModelButton.addEventListener('click', () => {
-        suggestImplementation({"analysis": responseTextContent, "rawData": rawData}, 'model');
+        generateModel(request, 'model');
     });
     genModelDiv.appendChild(genModelButton);
     return genModelDiv;
 }
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const themeSwitch = document.getElementById('themeSwitch'),
@@ -76,11 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     submitButton.addEventListener('click', () => {
-        document.getElementById('card-container').style.transform = 'translateX(-300%)';
- 
         const markdownText = markdownInput.value,
             responseDiv = document.createElement('div'),
             userPromptDiv = document.createElement('div');
+        if (markdownText.length < 1) return
+
+        document.getElementById('card-container').style.transform = 'translateX(-300%)';
+        document.getElementById('card-container').style.display = 'none';
+ 
         userPromptDiv.className = 'user-prompt';
         responseDiv.className = 'response-prompt';
         userPromptDiv.textContent = markdownInput.value;
@@ -88,10 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
         chatContainer.insertBefore(responseDiv, document.querySelector('#responseContainer'));
         submitButton.appendChild(spinnerIcon);
 
-        fetch('/csp/api/dc/fhirfy/analyze-data', {
+        const username = document.getElementById('username').value,
+            password = document.getElementById('password').value,
+            mockName = document.getElementById('mockName').value;
+        fetch(`/csp/api/dc/fhirfy/analyze-data${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(`${username}:${password}`) 
             },
             body: JSON.stringify({ input: { rawData: markdownText } })
         })
@@ -109,43 +116,75 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.code === 'Semicolon') {
+        console.log('settings');
+        toggleSettingsForm();
+    }
+});
+
+const toggleSettingsForm = () => {
+    document.getElementById('settings-container').classList.toggle('hidden');
+}
+
+const saveSettings = () => {
+    toggleSettingsForm(); 
+}
+
 suggestImplementation = (request) => {
-    // Make a request to the suggest-solution API endpoint
-    fetch('/csp/api/dc/fhirfy/suggest-solution', {
+    const username = document.getElementById('username').value,
+        password = document.getElementById('password').value,
+        mockName = document.getElementById('mockName').value;
+    console.log(request);
+
+    fetch(`/csp/api/dc/fhirfy/suggest-solution${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(`${username}:${password}`)
         },
-        body: request
+        body: JSON.stringify(request)
     })
     .then(response => response.json())
     .then(data => {
-      // Handle the response from the suggest-solution endpoint
         console.log('Suggested implementation:', data);
-        simulateTypingAnimation(`${data.name}\n${data.description}`, 'model');
+        if (!!!data.solutionSuggestion) return console.log('No implementation found');
+        let suggestion = `## ${data.solutionSuggestion.name}\n${data.solutionSuggestion.description}`;
+        if (data.solutionSuggestion.hasOwnProperty("subModules")) data.solutionSuggestion.subModules.subModule.forEach((submodule) => {
+            suggestion += `\n\n### ${submodule.name}\n${submodule.description}`
+        })
+        suggestion += !!!data.solutionSuggestion.pseudoCode ? '' : `\n## Pseudo Code\n\`\`\`\n ${data.solutionSuggestion.pseudoCode}\n\`\`\`\n`	
+        simulateTypingAnimation(suggestion, 'model', null, data.solutionSuggestion);
     })
     .catch(error => {
-      // Handle errors
         console.error('Error suggesting implementation:', error);
     });
 }
 
 generateModel = (request) => {
-    // Make a request to the suggest-solution API endpoint
-    fetch('/csp/api/dc/fhirfy/generate-module', {
+    const username = document.getElementById('username').value,
+        password = document.getElementById('password').value,
+        mockName = document.getElementById('mockName').value;
+    fetch(`/csp/api/dc/fhirfy/generate-module${ !!!mockName ? '': `?mockName=${mockName}`}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + btoa(`${username}:${password}`)
         },
-        body: request
+        body: JSON.stringify(request)
     })
     .then(response => response.json())
     .then(data => {
-      // Handle the response from the suggest-solution endpoint
         console.log('generated module:', data);
+
+        if (!!!data) return console.log('No implementation found');
+        gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n`;
+        if (data.hasOwnProperty("files")) data.files.forEach((file) => {
+            gen_module += `\n#### ${file.name}\n${!!!file.description ? '' : file.description}\n\`\`\`\n ${file["source-code"]}\n\`\`\`\n`
+        })
+        simulateTypingAnimation(gen_module, null);
     })
     .catch(error => {
-      // Handle errors
         console.error('Error generating module:', error);
     });
 }

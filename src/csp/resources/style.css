@@ -111,9 +111,10 @@ button:hover {
 .response-text {
     font-family: 'Courier New', monospace;
     white-space: pre-wrap;
+    width: 100%;
     overflow: hidden;
     border-right: 2px solid #fff;
-    font-size: 1.2em;
+    font-size: 0.9em;
     display: inline-block;
     vertical-align: bottom;
     animation: typing 3s steps(40) infinite;
@@ -159,10 +160,9 @@ button:hover {
     margin-right: 5px;
 }
 
-
 #card-container {
     position: absolute;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     max-width: 80%;
@@ -173,6 +173,11 @@ button:hover {
     overflow: hidden;
     transition: transform 0.3s ease-in-out;
     position: relative; /* Added position relative */
+}
+
+.dark-theme #card-container {
+    background-color: #424769;
+    color: #fff;
 }
 
 .instruction-card {
@@ -204,4 +209,25 @@ button:hover {
 
 .dot.active {
     background-color: #2D3250;
+}
+
+#settings-container {
+    display: none;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+#settings-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none;
 }

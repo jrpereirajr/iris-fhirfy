@@ -224,6 +224,209 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "analyze-data[simple-csv]",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"input\": {\r\n        \"rawData\": \"Patient ID,Namel\\n1,John Doe\\n2,Jane Smith\\n3,Michael Johnson\\n4,Emily Williams\\n5,David Brown\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/analyze-data?mockName=simple-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"api",
+						"dc",
+						"fhirfy",
+						"analyze-data"
+					],
+					"query": [
+						{
+							"key": "mockName",
+							"value": "simple-csv"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "suggest-solution[simple-csv]",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"input\": {\r\n        \"rawData\": \"Patient ID,Namel\\n1,John Doe\\n2,Jane Smith\\n3,Michael Johnson\\n4,Emily Williams\\n5,David Brown\",\r\n        \"analysis\": \"**Data Structure and Content**\\n\\nThe provided data is a simple comma-separated value (CSV) file with two columns:\\n\\n* **Patient ID:** A unique identifier for each patient.\\n* **Name:** The patient's name.\\n\\n**Example Data**\\n\\n```\\nPatient ID,Name\\n1,John Doe\\n2,Jane Smith\\n3,Michael Johnson\\n4,Emily Williams\\n5,David Brown\\n```\\n\\n**Working with the Data**\\n\\nTo work with this data effectively, you can use a variety of tools and techniques. Some common options include:\\n\\n* **Spreadsheets:** You can import the CSV file into a spreadsheet program, such as Microsoft Excel or Google Sheets. This will allow you to view and manipulate the data in a tabular format.\\n* **Databases:** You can also import the CSV file into a database, such as MySQL or PostgreSQL. This will allow you to store and query the data in a structured way.\\n* **Programming Languages:** You can use a programming language, such as Python or Java, to read and parse the CSV file. This will give you the most flexibility in terms of how you work with the data.\\n\\n**Additional Notes**\\n\\n* The data is in a simple format, but it is important to note that the data may contain errors or inconsistencies.\\n* The data may also be missing important information, such as the patient's age or gender.\\n* It is important to clean and validate the data before using it for any analysis or decision-making.\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/suggest-solution?mockName=simple-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"api",
+						"dc",
+						"fhirfy",
+						"suggest-solution"
+					],
+					"query": [
+						{
+							"key": "mockName",
+							"value": "simple-csv"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generate-module[simple-csv]",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"input\": {\r\n        \"solutionSuggestion\": {\r\n            \"name\": \"FHIR Bundle Creator\",\r\n            \"description\": \"This solution will transform raw data into a FHIR Bundle resource.\",\r\n            \"subModules\": {\r\n                \"subModule\": [\r\n                    {\r\n                        \"name\": \"DataParser\",\r\n                        \"description\": \"Parses the raw data and extracts the patient ID and name.\"\r\n                    },\r\n                    {\r\n                        \"name\": \"FHIRBundleCreator\",\r\n                        \"description\": \"Creates a FHIR Bundle resource from the parsed data.\"\r\n                    }\r\n                ]\r\n            },\r\n            \"pseudoCode\": \"1. Use the DataParser sub module to parse the raw data and extract the patient ID and name.\\n2. Use the FHIRBundleCreator sub module to create a FHIR Bundle resource from the parsed data.\\n3. Save the FHIR Bundle resource to a file.\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/generate-module?mockName=simple-csv",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"api",
+						"dc",
+						"fhirfy",
+						"generate-module"
+					],
+					"query": [
+						{
+							"key": "mockName",
+							"value": "simple-csv"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/download",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/download?moduleName=fhir_bundle_creator",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"api",
+						"dc",
+						"fhirfy",
+						"download"
+					],
+					"query": [
+						{
+							"key": "moduleName",
+							"value": "fhir_bundle_creator"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
