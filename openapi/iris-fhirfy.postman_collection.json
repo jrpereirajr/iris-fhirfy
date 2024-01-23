@@ -383,6 +383,50 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "/download",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "SYS",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "_system",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:32783/csp/api/dc/fhirfy/download?moduleName=fhir_bundle_creator",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "32783",
+					"path": [
+						"csp",
+						"api",
+						"dc",
+						"fhirfy",
+						"download"
+					],
+					"query": [
+						{
+							"key": "moduleName",
+							"value": "fhir_bundle_creator"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
