@@ -132,6 +132,33 @@ XData OpenAPI [ MimeType = application/json ]
         }
       }
     },
+    "/download":{
+      "get":{
+        "operationId":"download",
+        "summary":"Download the code generated for a solution.",
+        "description":"Download the code generated for a solution.",
+        "produces":[
+          "application/octet-stream"
+        ],
+        "parameters":[
+          {
+            "name":"moduleName",
+            "in":"query",
+            "type":"string",
+            "required":true
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"Successful zip response",
+            "schema":{
+              "type":"string",
+              "format":"binary"
+            }
+          }
+        }
+      }
+    },
     "/mock/simple-csv":{
       "get":{
         "operationId":"mockSimpleCSV",

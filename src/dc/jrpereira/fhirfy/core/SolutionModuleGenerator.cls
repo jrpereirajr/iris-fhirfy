@@ -253,4 +253,23 @@ Method WriteFile(filePath As %String, fileContent As %String) As %Status
     Quit status
 }
 
+Method CompressModule(moduleName) As %String [ Language = python ]
+{
+    import os
+    import tempfile
+    import shutil
+    
+    try:
+        directory_to_compress = f"/home/irisowner/dev/python/{moduleName}"
+        temp_dir = tempfile.mkdtemp()
+        compressed_file = os.path.join(temp_dir, f'{moduleName}.zip')
+        shutil.make_archive(compressed_file[:-4], 'zip', directory_to_compress)
+    except Exception as e:
+        raise Exception("Failed to compress module: " + str(e))
+    #; finally:
+    #;     shutil.rmtree(temp_dir)
+
+    return compressed_file
+}
+
 }

@@ -23,6 +23,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/suggest-solution" Method="post" Call="suggestSolution" />
   <!-- Generates the code for a solution suggestion. -->
   <Route Url="/generate-module" Method="post" Call="generateModule" />
+  <!-- Download the code generated for a solution. -->
+  <Route Url="/download" Method="get" Call="download" />
   <!-- Mock data for a simple CSV as input -->
   <Route Url="/mock/simple-csv" Method="get" Call="mockSimpleCSV" />
   <!-- Return the OpenAPI 2.0 specification -->
@@ -94,6 +96,26 @@ ClassMethod generateModule() As %Status
             Set pmockName=%request.Data("mockName",1)
         }
         Set response=##class(dc.jrpereira.fhirfy.api.impl).generateModule(pinput,.pmockName)
+        Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
+        Do ..LogInBackground(ex)
+    }
+    Quit $$$OK
+}
+
+/// Download the code generated for a solution.
+ClassMethod download() As %Status
+{
+    Try {
+        Do ##class(%REST.Impl).%SetContentType("application/octet-stream")
+        If '##class(%REST.Impl).%CheckAccepts("application/octet-stream") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If '$data(%request.Data("moduleName",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"moduleName")) Quit
+        If $data(%request.Data("moduleName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"moduleName")) Quit
+        }
+        Set pmoduleName=%request.Data("moduleName",1)
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).download(pmoduleName)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
