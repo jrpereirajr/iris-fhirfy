@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {{styles}}
+  <title>Used Prompts</title>
+</head>
+<body>
+  <ul id="promptsList"></ul>
+
+  <script>
+    // Dummy data for testing, replace with actual data
+    const usedPrompts = ["Prompt 1", "Prompt 2", "Prompt 3"];
+
+    const promptsList = document.getElementById('promptsList');
+    
+    usedPrompts.forEach(prompt => {
+      const listItem = document.createElement('li');
+      listItem.textContent = prompt;
+      promptsList.appendChild(listItem);
+    });
+  </script>
+</body>
+</html>

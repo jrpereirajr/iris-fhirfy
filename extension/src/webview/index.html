@@ -114,68 +114,38 @@
                 username = vscode.getState().username || '_SYSTEM',
                 password = vscode.getState().password || 'SYS';
                 */
-        const vscode = acquireVsCodeApi(),
-            endpoint = '/csp/api/fhirfy',
-            host = 'localhost',
-            port = 32783,
-            username = '_SYSTEM',
-            password = 'SYS',
-            apiUrl = `http://${host}:${port}${endpoint}`;
-        /*
-        document.body.addEventListener('click', (event) => {
-            if (event.target.id === 'analyzeButton') {
-                console.log('test');
+        const vscode = acquireVsCodeApi();
+
+        document.getElementById('analyzeButton').addEventListener('click', () => {
+            const markdownContent = document.getElementById('markdownInput').value;
+
+            // Send a message to the extension with the markdown content
+            try {
+                console.log('Sending message to extension:', { command: 'analyzeData', text: markdownContent });
+                vscode.postMessage({
+                    command: 'analyzeData',
+                    text: markdownContent
+                });
+            } catch (error) {
+                console.warn('Failed to send message to extension:', error);
             }
         });
-    */
 
-        document.getElementById('analyzeButton').addEventListener('click', async () => {
-            const markdownContent = document.getElementById('markdownInput').value.trim();
 
-            // Check if the textarea is empty
-            if (markdownContent.length < 1) {
-                console.log('Textarea cannot be empty. Please enter data for analysis.');
-                return;
+        window.addEventListener('message', (event) => {
+            const message = event.data;
+
+            // Handle the 'analysisResult' command
+            if (message.command === 'analysisResult') {
+                const analysisResult = message.result;
+                document.getElementById('analysisResultContainer').innerText = analysisResult;
             }
 
-            try {
-                document.getElementById('card-container').style.display = 'none';
-                document.getElementById('markdownInput').innerText = markdownContent;
-                document.getElementById('responseText').innerText = '';
-                const mockName = document.getElementById('mockName').value;
+            // Handle the 'error' command
 
-                
-                //const response = await fetch(`${apiUrl}/analyze-data${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
-                const response = await fetch(`http://localhost:32783/csp/api/dc/fhirfy/analyze-data${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa(`${username}:${password}`)
-                    },
-                    body: JSON.stringify({
-                        input: {
-                            rawData: markdownContent
-                        }
-                    })
-                });
-
-                // Check if the request was successful (status code 200)
-                if (response.ok) {
-                    // Parse the JSON response
-                    const result = await response.json();
-                    console.log('ok ');
-
-                    // Display the analysis result
-                    document.getElementById('analysisResult').innerText = result.markdownResponse;
-
-                    // Display Suggest Implementation button
-                    //document.getElementById('suggestButtonContainer').style.display = 'flex';
-                } else {
-                    // Handle error cases
-                    console.error('Error:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Error:', error);
+            if (message.command === 'error') {
+                const errorMessage = message.error;
+                console.error('Webview Error:', errorMessage);
             }
         });
 

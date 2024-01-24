@@ -25,8 +25,48 @@ export function activate(context: vscode.ExtensionContext) {
 
     getWebviewContent(context).then(htmlContent => {
         panel.webview.html = htmlContent;
-    });
 
+        panel.webview.onDidReceiveMessage(
+            message => {
+                try {
+                    console.log('Received message from webview:', message);
+                    switch (message.command) {
+                        case 'analyzeData':
+                            console.log('Analyzing data...', message.text);
+                            const markdownContent = message.text;
+
+                            // Make the HTTP POST request to the server
+                            analyzeDataOnServer(markdownContent)
+                                .then((response) => {
+                                    // Send the server response back to the webview
+                                    panel.webview.postMessage({
+                                        command: 'analysisResult',
+                                        result: response
+                                    });
+                                })
+                                .catch((error) => {
+                                    // Handle errors
+                                    console.error('Error:', error.message);
+                                    // Send an error message to the webview
+                                    panel.webview.postMessage({
+                                        command: 'error',
+                                        error: 'Error analyzing data.'
+                                    });
+                                });
+                            return;
+                        case 'alert':
+                            vscode.window.showErrorMessage(message.text);
+                            return;
+                    }
+                } catch (error) {
+                    console.error('Error handling message:', error);
+                }
+            },
+            undefined,
+            context.subscriptions
+        );
+
+    });
     const icon = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
     icon.text = "$(comment-discussion) FHIRfy Analyzer";
     icon.command = 'fhirfyAnalyzer.show';
@@ -50,4 +90,35 @@ function getWebviewContent(context: vscode.ExtensionContext): Thenable<string> {
 
 export function deactivate() {
     console.log('FHIRfy Analyzer Extension is now deactivated!');
+}
+
+
+async function analyzeDataOnServer(markdownContent: string): Promise<string> {
+    // Implement the logic to make the HTTP POST request to the server
+    // Use your preferred HTTP library or the built-in vscode extension API
+    // For example, you can use the 'request-promise' library:
+
+    console.log('Analyzing data on ts ,', markdownContent);
+    // const request = require('request-promise');
+
+    // const options = {
+    //     method: 'POST',
+    //     uri: 'http://localhost:32783/csp/api/fhirfy/analyze-data',
+    //     body: {
+    //         input: {
+    //             rawData: markdownContent
+    //         }
+    //     },
+    //     json: true
+    // };
+
+    // return request(options);
+
+    // Placeholder: Simulating a server response
+    return new Promise<string>((resolve) => {
+        // Simulate a successful analysis result
+        setTimeout(() => {
+            resolve('Analysis result: Lorem ipsum dolor sit amet.');
+        }, 1000);
+    });
 }
