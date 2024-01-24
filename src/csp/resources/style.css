@@ -231,3 +231,10 @@ button:hover {
 .hidden {
     display: none;
 }
+
+.error-message {
+    color: #cc0f35;
+    background-color: #feecf0;
+    padding: 10px;
+    margin-bottom: 10px;
+}
