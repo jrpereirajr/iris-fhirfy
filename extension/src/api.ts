@@ -1,4 +1,29 @@
-import fetch from 'node-fetch';
+
+interface AnalysisInput {
+    rawData: string;
+}
+
+interface AnalysisResponse {
+    markdownResponse: string;
+}
+
+interface SolutionSuggestionInput {
+    rawData: string;
+    analysis: string;
+}
+
+interface SuggestedSolutionResponse {
+    solutionSuggestion: {
+        name: string;
+        description: string;
+        subModules?: any[]; // Adjust the type based on the actual structure
+        pseudoCode: string;
+    };
+}
+
+interface GenerateModuleRequest { }
+
+interface GenerateModuleResponse { }
 
 class FHIRfyApi {
     private baseUrl: string;
@@ -7,7 +32,7 @@ class FHIRfyApi {
         this.baseUrl = baseUrl;
     }
 
-    private async fetchJson(url: string, options: RequestInit = {}): Promise<any> {
+    private async fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
         const response = await fetch(url, options);
 
         if (!response.ok) {
@@ -20,35 +45,35 @@ class FHIRfyApi {
     public async analyzeData(rawData: string): Promise<string> {
         const url = `${this.baseUrl}/analyze-data`;
 
-        const response = await this.fetchJson(url, {
+        const response = await this.fetchJson<AnalysisResponse>(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ input: { rawData } }),
+            body: JSON.stringify({ input: { rawData } } as AnalysisInput),
         });
 
         return response.markdownResponse;
     }
 
-    public async suggestSolution(rawData: string, analysis: string): Promise<any> {
+    public async suggestSolution(rawData: string, analysis: string): Promise<SuggestedSolutionResponse> {
         const url = `${this.baseUrl}/suggest-solution`;
 
-        const response = await this.fetchJson(url, {
+        const response = await this.fetchJson<SuggestedSolutionResponse>(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ input: { rawData, analysis } }),
+            body: JSON.stringify({ input: { rawData, analysis } } as SolutionSuggestionInput),
         });
 
-        return response.solutionSuggestion;
+        return response;
     }
 
-    public async generateModule(request: any): Promise<any> {
+    public async generateModule(request: GenerateModuleRequest): Promise<GenerateModuleResponse> {
         const url = `${this.baseUrl}/generate-module`;
 
-        const response = await this.fetchJson(url, {
+        const response = await this.fetchJson<GenerateModuleResponse>(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
