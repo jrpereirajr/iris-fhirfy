@@ -42,22 +42,23 @@ class FHIRfyApi {
         return response.json();
     }
 
-    public async analyzeData(rawData: string): Promise<string> {
-        const url = `${this.baseUrl}/analyze-data`;
+
+    public async analyzeData(rawData: string, mockName?: string): Promise<string> {
+        const url = `${this.baseUrl}/analyze-data${mockName ? `?mockName=${mockName}` : ''}`;
 
         const response = await this.fetchJson<AnalysisResponse>(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ input: { rawData } } as AnalysisInput),
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input: { rawData } } as AnalysisInput),
         });
 
         return response.markdownResponse;
     }
 
-    public async suggestSolution(rawData: string, analysis: string): Promise<SuggestedSolutionResponse> {
-        const url = `${this.baseUrl}/suggest-solution`;
+    public async suggestSolution(rawData: string, analysis: string, mockName?: string): Promise<SuggestedSolutionResponse> {
+        const url = `${this.baseUrl}/suggest-solution${mockName ? `?mockName=${mockName}` : ''}`;
 
         const response = await this.fetchJson<SuggestedSolutionResponse>(url, {
             method: 'POST',
@@ -70,8 +71,8 @@ class FHIRfyApi {
         return response;
     }
 
-    public async generateModule(request: GenerateModuleRequest): Promise<GenerateModuleResponse> {
-        const url = `${this.baseUrl}/generate-module`;
+    public async generateModule(request: GenerateModuleRequest, mockName?: string): Promise<GenerateModuleResponse> {
+        const url = `${this.baseUrl}/generate-module${mockName ? `?mockName=${mockName}` : ''}`;
 
         const response = await this.fetchJson<GenerateModuleResponse>(url, {
             method: 'POST',
