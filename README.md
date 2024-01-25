@@ -116,3 +116,9 @@ docker-compose up -d
 ```
 
 This and other helpful commands you can find in [dev.md](https://github.com/intersystems-community/iris-fhirfy/blob/cd7e0111ff94dcac82377a2aa7df0ce5e0571b5a/dev.md)
+
+## VSCode extension
+### Installation
+- Open your VS Code editor and navigate to the Extensions tab.
+- In the Extensions tab, open the options menu and select Install from VSIX.
+- In the file picker dialog that opens, navigate to the project root and select the VSIX file, and select Install to confirm the installation.
