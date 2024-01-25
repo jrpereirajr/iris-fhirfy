@@ -30,7 +30,7 @@
             "properties": {
                 "fhirfyAnalyzer.endpoint": {
                     "type": "string",
-                    "default": "/csp/api/fhirfy",
+                    "default": "/csp/api/dc/fhirfy",
                     "description": "The endpoint root for the FHIRfy Analyzer services"
                 },
                 "fhirfyAnalyzer.host": {

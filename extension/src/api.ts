@@ -1,15 +1,5 @@
-
-interface AnalysisInput {
-    rawData: string;
-}
-
 interface AnalysisResponse {
     markdownResponse: string;
-}
-
-interface SolutionSuggestionInput {
-    rawData: string;
-    analysis: string;
 }
 
 interface SuggestedSolutionResponse {
@@ -21,15 +11,15 @@ interface SuggestedSolutionResponse {
     };
 }
 
-interface GenerateModuleRequest { }
-
-interface GenerateModuleResponse { }
-
-class FHIRfyApi {
+export class FHIRfyApi {
     private baseUrl: string;
+    private username: string;
+    private password: string;
 
-    constructor(baseUrl: string) {
+    constructor(baseUrl: string, username?: string, password?: string) {
         this.baseUrl = baseUrl;
+        this.username = username ? username : '_SYSTEM';
+        this.password = password ? password : 'SYS';
     }
 
     private async fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
@@ -42,16 +32,17 @@ class FHIRfyApi {
         return response.json();
     }
 
-
     public async analyzeData(rawData: string, mockName?: string): Promise<string> {
         const url = `${this.baseUrl}/analyze-data${mockName ? `?mockName=${mockName}` : ''}`;
+        console.log(url);
 
         const response = await this.fetchJson<AnalysisResponse>(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + btoa(`${this.username}:${this.password}`),
         },
-        body: JSON.stringify({ input: { rawData } } as AnalysisInput),
+        body: JSON.stringify({ input: { rawData: rawData } }),
         });
 
         return response.markdownResponse;
@@ -64,20 +55,22 @@ class FHIRfyApi {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(`${this.username}:${this.password}`),
             },
-            body: JSON.stringify({ input: { rawData, analysis } } as SolutionSuggestionInput),
+            body: JSON.stringify({ "rawData": rawData, "analysis": analysis } ),
         });
 
         return response;
     }
 
-    public async generateModule(request: GenerateModuleRequest, mockName?: string): Promise<GenerateModuleResponse> {
+    public async generateModule(request: string, mockName?: string): Promise<string> {
         const url = `${this.baseUrl}/generate-module${mockName ? `?mockName=${mockName}` : ''}`;
 
-        const response = await this.fetchJson<GenerateModuleResponse>(url, {
+        const response = await this.fetchJson<string>(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(`${this.username}:${this.password}`),
             },
             body: JSON.stringify({ input: request }),
         });

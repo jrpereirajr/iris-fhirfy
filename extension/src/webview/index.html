@@ -14,6 +14,19 @@
             justify-content: space-between;
         }
 
+        #chat-container {
+            max-width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .typing-animation {
+            word-wrap: break-word;
+        }
+
         textarea {
             width: 100%;
             height: calc(100% - 20px); /* Adjust height for padding */
@@ -45,6 +58,17 @@
             90% {
                 border-right: 2px solid #000;
             }
+        }
+
+        #suggestButton {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007acc;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
         }
 
     </style>
@@ -79,26 +103,17 @@
                 <p>🌟 In the provided textarea, enter your raw data in Markdown format.</p>
                 <p>Example:</p>
                 <pre>Patient ID,Patient Name\n1,Patient 1\n2,Patient 2</pre>
-            </div>
-
-            <div id="instructions-card-3" class="instruction-card">
                 <h3>Step 2 - Get Analysis Report 🕵️‍♂️</h3>
                 <p>Click "Analyze Data" to receive an analysis report.</p>
                 <p>If you need solutions, click "Suggest Implementation."</p>
-            </div>
-        
-            <div id="instructions-card-4" class="instruction-card">
                 <h3>Step 3 - Generate Code 🚧</h3>
                 <p>Generate code for a chosen solution as a ZPM module.</p>
             </div>
         
         </div>
         <div class="chat-container" id="chatContainer">
-
-            <div id="responseContainer" class="response-container">
-                <p id="responseText" class="response-text"></p>
-            </div>
         </div>
+        <div id="typing-animation" class="typing-animation"></div>
         <div class="bottom-bar">
             <textarea id="markdownInput" placeholder="Enter your data to analyse..."></textarea>
             <button id="analyzeButton">Analyse it!</button>
@@ -106,25 +121,88 @@
     </div>
     <script>
         console.log('everything is ok');
-
-            /*
-            const endpoint = vscode.getState().endpoint || '/csp/api/fhirfy',
-                host = vscode.getState().host || 'localhost',
-                port = vscode.getState().port || 32783,
-                username = vscode.getState().username || '_SYSTEM',
-                password = vscode.getState().password || 'SYS';
-                */
         const vscode = acquireVsCodeApi();
+                    
+        const displayErrorMessage = (message) => {
+            const errorMessageDiv = document.createElement('div');
+            errorMessageDiv.classList.add('error-message');
+            errorMessageDiv.textContent = message;
+
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.appendChild(errorMessageDiv);
+        };
+
+        const suggestButton = (request) => {
+            const suggestDiv = document.createElement('div'), 
+                suggestButton = document.createElement('button');
+            suggestButton.className = 'suggest-button';
+            suggestButton.textContent = 'Suggest Implementation';
+            suggestButton.addEventListener('click', () => {
+                vscode.postMessage({
+                    command: 'suggestSolution',
+                    text: JSON.stringify(request),
+                    mock: document.getElementById('mockName').value
+                });
+            });
+            suggestDiv.appendChild(suggestButton);
+            return suggestDiv;
+        }
+
+        const generateModelButton = (request) => {
+            const genModelDiv = document.createElement('div'), 
+                genModelButton = document.createElement('button');
+            genModelButton.className = 'gen-model-button';
+            genModelButton.textContent = 'Generate Model';
+            genModelButton.addEventListener('click', () => {
+                vscode.postMessage({
+                    command: 'generateModule',
+                    text: request,
+                    mock: document.getElementById('mockName').value
+                });
+            });
+            genModelDiv.appendChild(genModelButton);
+            return genModelDiv;
+        }
+
+        const typeText = (element, text, interval, button) => {
+            let index = 0;
+
+            function type() {
+                if (index < text.length) {
+                    // Check for HTML tags and render them
+                    if (text[index] === '<') {
+                        const endIndex = text.indexOf('>', index);
+                        if (endIndex !== -1) {
+                            const htmlTag = text.substring(index, endIndex + 1);
+                            element.innerHTML += htmlTag;
+                            index = endIndex + 1;
+                        }
+                    } else {
+                        element.innerHTML += text.charAt(index);
+                        index++;
+                    }
+                } else {
+                    clearInterval(typingInterval);
+                    const chatContent = document.getElementById('chatContainer');
+                    !!!button ? '' : chatContent.appendChild(button);
+                }
+            }
+
+            const typingInterval = setInterval(type, interval);
+        }
 
         document.getElementById('analyzeButton').addEventListener('click', () => {
             const markdownContent = document.getElementById('markdownInput').value;
 
-            // Send a message to the extension with the markdown content
+            if (markdownContent.length < 1) return
+            document.getElementById('card-container').style.display = 'none';
+
             try {
                 console.log('Sending message to extension:', { command: 'analyzeData', text: markdownContent });
                 vscode.postMessage({
                     command: 'analyzeData',
-                    text: markdownContent
+                    text: markdownContent,
+                    mock: document.getElementById('mockName').value
                 });
             } catch (error) {
                 console.warn('Failed to send message to extension:', error);
@@ -133,67 +211,55 @@
 
 
         window.addEventListener('message', (event) => {
-            const message = event.data;
+            const message = event.data,
+                chatContent = document.getElementById('chatContainer');
 
-            // Handle the 'analysisResult' command
             if (message.command === 'analysisResult') {
-                const analysisResult = message.result;
-                document.getElementById('analysisResultContainer').innerText = analysisResult;
+                console.log(message);
+                const analysisResult = message.result,
+                    typingAnimation = document.createElement('div');
+                typingAnimation.classList.add('typing-animation');
+                chatContent.appendChild(typingAnimation);
+                req = {"rawData": document.getElementById('markdownInput').value, "analysis": analysisResult};
+                typeText(typingAnimation, `<p>${analysisResult.replace(/\n/g, '<br/>')}</p>`, 15, suggestButton(req));
+                chatContent.scrollTop = chatContent.scrollHeight;
             }
 
-            // Handle the 'error' command
+            if (message.command === 'solutionResult') {
+                console.log(message);
+                const data = message.result,
+                    typingAnimation = document.createElement('div');
+                typingAnimation.classList.add('typing-animation');
+                chatContent.appendChild(typingAnimation);
+                if (!!!data.solutionSuggestion) return console.log('No implementation found');
+                let suggestion = `## ${data.solutionSuggestion.name}\n${data.solutionSuggestion.description}`;
+                if (data.solutionSuggestion.hasOwnProperty("subModules")) data.solutionSuggestion.subModules.subModule.forEach((submodule) => {
+                    suggestion += `\n\n### ${submodule.name}\n${submodule.description}`
+                })
+                suggestion += !!!data.solutionSuggestion.pseudoCode ? '' : `\n## Pseudo Code\n\`\`\`\n ${data.solutionSuggestion.pseudoCode}\n\`\`\`\n`	
+        
+                typeText(typingAnimation, !!!suggestion ? '' : `<p>${suggestion.replace(/\n/g, '<br/>')}</p>`, 15, generateModelButton(JSON.stringify(data)));
+                chatContent.scrollTop = chatContent.scrollHeight;
+            }
+
+            if (message.command === 'modelResult') {
+                console.log(message);
+                const analysisResult = JSON.stringify(message.result),
+                    typingAnimation = document.createElement('div');
+                typingAnimation.classList.add('typing-animation');
+                chatContent.appendChild(typingAnimation);
+                req = {"rawData": document.getElementById('markdownInput').value, "analysis": analysisResult};
+                typeText(typingAnimation, !!!analysisResult ? '' : `<p>${analysisResult.replace(/\n/g, '<br/>')}</p>`, 15);
+                chatContent.scrollTop = chatContent.scrollHeight;
+            }
 
             if (message.command === 'error') {
                 const errorMessage = message.error;
                 console.error('Webview Error:', errorMessage);
+                displayErrorMessage(errorMessage);
             }
         });
 
-        document.getElementById('suggestButton').addEventListener('click', async () => {
-            const markdownContent = document.getElementById('markdownInput').value.trim();
-            const analysisResultContent = document.getElementById('analysisResult').innerText.trim();
-
-            // Construct the URL for the suggest-solution endpoint
-            const suggestApiUrl = `http://${host}:${port}/suggest-solution`;
-
-            try {
-                // Display typing animation while waiting for the response
-                document.getElementById('suggestButtonContainer').style.display = 'none';
-                document.getElementById('suggestResultContainer').style.display = 'flex';
-                document.getElementById('suggestResultContainer').innerText = 'Suggesting implementation...';
-
-                // Make a POST request to the suggest-solution endpoint
-                const suggestResponse = await fetch(suggestApiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa(`${username}:${password}`)
-                    },
-                    body: JSON.stringify({
-                        input: {
-                            rawData: markdownContent,
-                            analysis: analysisResultContent
-                        }
-                    })
-                });
-
-                // Check if the request was successful (status code 200)
-                if (suggestResponse.ok) {
-                    // Parse the JSON response
-                    const suggestResult = await suggestResponse.json();
-
-                    // Display the suggested implementation result
-                    document.getElementById('suggestResultContainer').innerText = suggestResult.solutionSuggestion.description;
-                } else {
-                    // Handle error cases
-                    console.error('Error:', suggestResponse.statusText);
-                    document.getElementById('suggestResultContainer').innerText = 'Error suggesting implementation.';
-                }
-            } catch (error) {
-                console.error('Error:', error.message);
-                document.getElementById('suggestResultContainer').innerText = 'Error suggesting implementation.';
-            }
-        });
     </script>
 </body>
 

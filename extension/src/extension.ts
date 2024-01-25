@@ -1,17 +1,20 @@
 import * as vscode from 'vscode';
+import * as api from './api';
 // import * as fs from 'fs';
 // import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('FHIRfy Extension is now active!');
 
-    const endpoint = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('endpoint', '/csp/api/fhirfy'),
+    const endpoint = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('endpoint', '/csp/api/dc/fhirfy'),
         host = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('host', 'localhost'),
         port = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('port', 32783),
         username = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('username', '_SYSTEM'),
-        password = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('password', 'SYS');
+        password = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('password', 'SYS'),
+        apiURL = `http://${host}:${port}${endpoint}`,
+        fhirfyApi = new api.FHIRfyApi(apiURL, username, password);
 
-    console.log(`Configured endpoint: ${endpoint}, host: ${host}, port: ${port}, username: ${username}, password: ${password}`);
+    console.log(`Configured endpoint: ${endpoint}, host: ${host}, port: ${port}, username: ${username}, password: ${password} API URL: ${apiURL}`);
 
     const panel = vscode.window.createWebviewPanel(
         'fhirfy',
@@ -32,34 +35,78 @@ export function activate(context: vscode.ExtensionContext) {
                     console.log('Received message from webview:', message);
                     switch (message.command) {
                         case 'analyzeData':
-                            console.log('Analyzing data...', message.text);
+                            console.log('Analyzing data...', message.text, message.mock);
                             const markdownContent = message.text;
 
-                            // Make the HTTP POST request to the server
-                            analyzeDataOnServer(markdownContent)
+                            fhirfyApi.analyzeData(message.text, message.mock)
                                 .then((response) => {
-                                    // Send the server response back to the webview
+                                    console.log('Analysis Result:', response)
                                     panel.webview.postMessage({
                                         command: 'analysisResult',
                                         result: response
                                     });
                                 })
                                 .catch((error) => {
-                                    // Handle errors
-                                    console.error('Error:', error.message);
-                                    // Send an error message to the webview
+                                    console.error('Error:', error.message)
                                     panel.webview.postMessage({
                                         command: 'error',
-                                        error: 'Error analyzing data.'
+                                        result: error.message
                                     });
                                 });
+
                             return;
+
+                        case 'suggestSolution':
+                            console.log('Suggest Solution...', message.text, message.mock);
+                            const suggest = JSON.parse(message.text);
+                            fhirfyApi.suggestSolution(suggest.rawData, suggest.analysis, message.mock)
+                                .then((response) => {
+                                    console.log('Solution Result:', response)
+                                    panel.webview.postMessage({
+                                        command: 'solutionResult',
+                                        result: response
+                                    });
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error.message)
+                                    panel.webview.postMessage({
+                                        command: 'error',
+                                        result: error.message
+                                    });
+                                });
+
+                            return;
+
+                        case 'generateModule':
+                            console.log('Generate Module...', message.text, message.mock);
+                            fhirfyApi.generateModule(JSON.parse(message.text), message.mock)
+                                .then((response) => {
+                                    console.log('Model Result:', response)
+                                    panel.webview.postMessage({
+                                        command: 'modelResult',
+                                        result: response
+                                    });
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error.message)
+                                    panel.webview.postMessage({
+                                        command: 'error',
+                                        result: error.message
+                                    });
+                                });
+
+                            return;
+
                         case 'alert':
                             vscode.window.showErrorMessage(message.text);
                             return;
                     }
                 } catch (error) {
                     console.error('Error handling message:', error);
+                    panel.webview.postMessage({
+                        command: 'error',
+                        result: error
+                    });
                 }
             },
             undefined,
@@ -90,35 +137,4 @@ function getWebviewContent(context: vscode.ExtensionContext): Thenable<string> {
 
 export function deactivate() {
     console.log('FHIRfy Analyzer Extension is now deactivated!');
-}
-
-
-async function analyzeDataOnServer(markdownContent: string): Promise<string> {
-    // Implement the logic to make the HTTP POST request to the server
-    // Use your preferred HTTP library or the built-in vscode extension API
-    // For example, you can use the 'request-promise' library:
-
-    console.log('Analyzing data on ts ,', markdownContent);
-    // const request = require('request-promise');
-
-    // const options = {
-    //     method: 'POST',
-    //     uri: 'http://localhost:32783/csp/api/fhirfy/analyze-data',
-    //     body: {
-    //         input: {
-    //             rawData: markdownContent
-    //         }
-    //     },
-    //     json: true
-    // };
-
-    // return request(options);
-
-    // Placeholder: Simulating a server response
-    return new Promise<string>((resolve) => {
-        // Simulate a successful analysis result
-        setTimeout(() => {
-            resolve('Analysis result: Lorem ipsum dolor sit amet.');
-        }, 1000);
-    });
 }
