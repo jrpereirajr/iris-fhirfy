@@ -51,23 +51,24 @@
                         <option value="simple-csv">Simple CSV</option>
                     </select>
                 </p>
-            </div>
 
-            <div id="instructions-card-2" class="instruction-card">
-                <h3>Step 1 - Input Raw Data Card 📝</h3>
-                <p>🌟 In the provided textarea, enter your raw data in Markdown format.</p>
+                <h3>📝 Step 1 - Input Raw Data Card</h3>
+                <p>In the provided textarea, enter your raw data in Markdown format.</p>
                 <p>Example:</p>
-                <pre>Patient ID,Patient Name\n1,Patient 1\n2,Patient 2</pre>
-            </div>
+                <pre>
+                    <code>
+                        Patient ID,Patient Name 
+                        1,Patient 1
+                        2,Patient 2
+                    </code>
+                </pre>
+                
 
-            <div id="instructions-card-3" class="instruction-card">
-                <h3>Step 2 - Get Analysis Report 🕵️‍♂️</h3>
+                <h3>🕵️‍ Step 2 - Get Analysis Report️</h3>
                 <p>Click "Analyze Data" to receive an analysis report.</p>
                 <p>If you need solutions, click "Suggest Implementation."</p>
-            </div>
         
-            <div id="instructions-card-4" class="instruction-card">
-                <h3>Step 3 - Generate Code 🚧</h3>
+                <h3>🚧 Step 3 - Generate Code</h3>
                 <p>Generate code for a chosen solution as a ZPM module.</p>
             </div>
         
