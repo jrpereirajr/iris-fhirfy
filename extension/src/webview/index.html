@@ -303,12 +303,17 @@
 
             if (message.command === 'modelResult') {
                 console.log(message);
-                const analysisResult = JSON.stringify(message.result),
+                const data = message.result,
                     typingAnimation = document.createElement('div');
                 typingAnimation.classList.add('typing-animation');
                 chatContent.appendChild(typingAnimation);
-                req = {"rawData": document.getElementById('markdownInput').value, "analysis": analysisResult};
-                typeText(typingAnimation, !!!analysisResult ? '' : `<p>${analysisResult.replace(/\n/g, '<br/>')}</p>`, 15);
+                if (!!!data) return console.log('No implementation found');
+                let gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n`;
+                if (data.hasOwnProperty("files")) data.files.forEach((file) => {
+                    gen_module += `\n#### ${file.name}\n${!!!file.description ? '' : file.description}\n\`\`\`\n ${file["source-code"]}\n\`\`\`\n`
+                })
+                req = {"rawData": document.getElementById('markdownInput').value, "analysis": JSON.stringify(data)};
+                typeText(typingAnimation, !!!gen_module ? '' : `<p>${gen_module.replace(/\n/g, '<br/>')}</p>`, 15);
                 chatContent.scrollTop = chatContent.scrollHeight;
             }
 
