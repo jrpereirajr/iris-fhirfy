@@ -110,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error:', error);
+                displayErrorMessage('Error analyzing data. Please try again.\n' + JSON.stringify(error));
                 submitButton.querySelector('.fa-spinner').remove();
             });
 
@@ -158,6 +159,7 @@ suggestImplementation = (request) => {
     })
     .catch(error => {
         console.error('Error suggesting implementation:', error);
+        displayErrorMessage('Error suggesting implementation. Please try again.\n' + JSON.stringify(error));
     });
 }
 
@@ -186,5 +188,15 @@ generateModel = (request) => {
     })
     .catch(error => {
         console.error('Error generating module:', error);
+        displayErrorMessage('Error generating module. Please try again.\n' + JSON.stringify(error));
     });
 }
+
+const displayErrorMessage = (message) => {
+    const errorMessageDiv = document.createElement('div');
+    errorMessageDiv.classList.add('error-message');
+    errorMessageDiv.textContent = message;
+
+    const chatContainer = document.getElementById('chatContainer');
+    chatContainer.insertBefore(errorMessageDiv, responseContainer);
+};
