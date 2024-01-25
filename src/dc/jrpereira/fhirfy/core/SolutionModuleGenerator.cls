@@ -17,24 +17,31 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     
     input = dataInput._Get("input")
     xmlData = self.GetLLMResponse(input)
-
-    xmlData = xmlData.replace("```xml", "")
-    xmlData = xmlData.replace("```", "")
-    #; xmlData = xmlData.replace("                ", "")
-    
-    try:
-        xmlDict = xmltodict.parse(xmlData)
-    except Exception as e:
-        raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
-    xmlDict = xmlDict["module"]
-    # avoid the structure ["files"]["file"]
-    xmlDict["files"] = xmlDict["files"]["file"]
-    result = json.dumps(xmlDict)
-
-    result = iris.cls("%Library.DynamicObject")._FromJSON(result)
-    self.CreateSolutionModuleWrapper(result)
-
+    result = self.GenerateModule(xmlData)
     return result
+
+    #; # writes the xmlData content to the file /tmp/resp.txt
+    #; f = open("/tmp/resp.txt", "w")
+    #; f.write(xmlData)
+    #; f.close()
+
+    #; xmlData = xmlData.replace("```xml", "")
+    #; xmlData = xmlData.replace("```", "")
+    #; #; xmlData = xmlData.replace("                ", "")
+    
+    #; try:
+    #;     xmlDict = xmltodict.parse(xmlData)
+    #; except Exception as e:
+    #;     raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
+    #; xmlDict = xmlDict["module"]
+    #; # avoid the structure ["files"]["file"]
+    #; xmlDict["files"] = xmlDict["files"]["file"]
+    #; result = json.dumps(xmlDict)
+
+    #; result = iris.cls("%Library.DynamicObject")._FromJSON(result)
+    #; self.CreateSolutionModuleWrapper(result)
+
+    #; return result
 }
 
 Method GetLLMResponse(input) As %String [ Language = python ]
@@ -56,16 +63,25 @@ Method GetSystemPrompt(data) As %String [ Language = python ]
     import iris
 
     solutionSuggestion = data._Get("solutionSuggestion")._ToJSON()
+    rawDataOverview = data._Get("analysis")
 
     clean = iris.cls("dc.jrpereira.fhirfy.core.Utils").CleanTripleQuotesString
     return clean(f"""
 # Problem statement
 
-You have to implement a serie of Python modules following provided instructions.
-The instructions are formatted in JSON.
-Implements all sub modules in the `subModules` key in the instructions JSON.
+You have to implement a serie of Python modules following provided instructions in order to transform raw data into FHIR.
+The instructions are formatted in JSON. The raw data overview is provided in markdown.
+Implements all sub modules in the `subModules` key in the instructions JSON and the overview of the raw data.
 Create a file called main.py which implements the pseudo code in the `pseudoCode` key in the instructions JSON.
 Create a __init__.py file which imports all the required modules.
+Use the Python library identiified in the PIP as "fhir.resources", to handle FHIR data.
+
+Raw data overview:
+
+```
+{rawDataOverview}
+```
+
 Instructions JSON to your solution:
 
 ```json
@@ -146,6 +162,31 @@ Follow this template, replacing text between ## and ## with your answers:
     </files>
 </module>
 """)
+}
+
+Method GenerateModule(xmlData As %String) As %String [ Language = python ]
+{
+    import xmltodict
+    import json
+    import iris
+
+    xmlData = xmlData.replace("```xml", "")
+    xmlData = xmlData.replace("```", "")
+    #; xmlData = xmlData.replace("                ", "")
+    
+    try:
+        xmlDict = xmltodict.parse(xmlData)
+    except Exception as e:
+        raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
+    xmlDict = xmlDict["module"]
+    # avoid the structure ["files"]["file"]
+    xmlDict["files"] = xmlDict["files"]["file"]
+    result = json.dumps(xmlDict)
+
+    result = iris.cls("%Library.DynamicObject")._FromJSON(result)
+    self.CreateSolutionModuleWrapper(result)
+
+    return result
 }
 
 Method CreateSolutionModuleWrapper(moduleInfo As %String)
@@ -262,8 +303,8 @@ Method CompressModule(moduleName) As %String [ Language = python ]
     try:
         directory_to_compress = f"/home/irisowner/dev/python/{moduleName}"
         temp_dir = tempfile.mkdtemp()
-        compressed_file = os.path.join(temp_dir, f'{moduleName}.zip')
-        shutil.make_archive(compressed_file[:-4], 'zip', directory_to_compress)
+        compressed_file = os.path.join(temp_dir, f'{moduleName}.tar.gz')
+        shutil.make_archive(compressed_file[:-7], 'gztar', directory_to_compress)
     except Exception as e:
         raise Exception("Failed to compress module: " + str(e))
     #; finally:

@@ -99,10 +99,10 @@ ClassMethod GetSolutionModuleGeneratorMockData() As %String [ Language = python 
     xmlData = clean(r'''<?xml version="1.0" encoding="UTF-8"?>
 <module>
     <name>fhir_bundle_creator</name>
-    <description>This solution will transform raw data into a FHIR Bundle resource.</description>
+    <description>This module transforms raw data into a FHIR Bundle resource.</description>
     <dependencies>
 <![CDATA[
-fhir
+fhir.resources==0.12.0
 ]]>
     </dependencies>
     <files>
@@ -123,18 +123,18 @@ from .fhir_bundle_creator import FHIRBundleCreator
             <description></description>
             <source-code>
 <![CDATA[
-from fhir_bundle_creator import DataParser, FHIRBundleCreator
+from fhir_bundle_creator import __init__
 
 def main():
-    # 1. Use the DataParser sub module to parse the raw data and extract the patient ID and name.
-    data_parser = DataParser()
-    patient_id, patient_name = data_parser.parse_data()
+    # Parse the raw data
+    data_parser = __init__.DataParser()
+    patient_data = data_parser.parse_data('data.csv')
 
-    # 2. Use the FHIRBundleCreator sub module to create a FHIR Bundle resource from the parsed data.
-    fhir_bundle_creator = FHIRBundleCreator()
-    fhir_bundle = fhir_bundle_creator.create_fhir_bundle(patient_id, patient_name)
+    # Create a FHIR Bundle resource
+    fhir_bundle_creator = __init__.FHIRBundleCreator()
+    fhir_bundle = fhir_bundle_creator.create_fhir_bundle(patient_data)
 
-    # 3. Save the FHIR Bundle resource to a file.
+    # Save the FHIR Bundle resource to a file
     with open('fhir_bundle.json', 'w') as f:
         f.write(fhir_bundle.json())
 
@@ -150,26 +150,31 @@ if __name__ == '__main__':
             <!-- sub module source code -->
             <source-code>
 <![CDATA[
+import csv
+
 class DataParser:
-    def parse_data(self): """Parses the raw data and extracts the patient ID and name.
+    def parse_data(self, filename):
+        """Parses the raw data and extracts the patient ID and name.
+
+        Args:
+            filename: The name of the CSV file containing the raw data.
 
         Returns:
-            tuple: A tuple containing the patient ID and name.
+            A list of dictionaries, where each dictionary contains the patient ID and name.
         """
 
-        # Read the raw data from a file.
-        with open('raw_data.txt', 'r') as f:
-            raw_data = f.read()
+        with open(filename, 'r') as f:
+            reader = csv.reader(f)
+            next(reader)  # Skip the header row
 
-        # Extract the patient ID and name from the raw data.
-        patient_id = raw_data[
-            0: 10
-        ]
-        patient_name = raw_data[
-            11:
-        ]
+            patient_data = []
+            for row in reader:
+                patient_data.append({
+                    'patient_id': row[0],
+                    'name': row[1]
+                })
 
-        return patient_id, patient_name
+        return patient_data
 ]]>
             </source-code>
             <!-- sub module functions metadata -->
@@ -177,8 +182,14 @@ class DataParser:
                 <function>
                     <name>parse_data</name>
                     <description>Parses the raw data and extracts the patient ID and name.</description>
-                    <input></input>
-                    <output>A tuple containing the patient ID and name.</output>
+                    <input>
+                        <parameter>
+                            <name>filename</name>
+                            <type>str</type>
+                            <description>The name of the CSV file containing the raw data.</description>
+                        </parameter>
+                    </input>
+                    <output>A list of dictionaries, where each dictionary contains the patient ID and name.</output>
                 </function>
             </functions>
         </file>
@@ -192,30 +203,29 @@ from fhir.resources.bundle import Bundle
 from fhir.resources.patient import Patient
 
 class FHIRBundleCreator:
-    def create_fhir_bundle(self, patient_id, patient_name): """Creates a FHIR Bundle resource from the parsed data.
+    def create_fhir_bundle(self, patient_data):
+        """Creates a FHIR Bundle resource from the parsed data.
 
         Args:
-            patient_id: The patient ID.
-            patient_name: The patient name.
+            patient_data: A list of dictionaries, where each dictionary contains the patient ID and name.
 
         Returns:
-            fhir.resources.bundle.Bundle: A FHIR Bundle resource.
+            A FHIR Bundle resource.
         """
 
-        # Create a new FHIR Bundle resource.
-        fhir_bundle = Bundle()
+        bundle = Bundle()
+        bundle.type = 'collection'
 
-        # Add a Patient resource to the bundle.
-        patient = Patient()
-        patient.id = patient_id
-        patient.name = [
-            {
-                "family": patient_name
-            }
-        ]
-        fhir_bundle.add_entry(patient)
+        for patient in patient_data:
+            fhir_patient = Patient()
+            fhir_patient.id = patient['patient_id']
+            fhir_patient.name = [{'family': patient['name']}]
 
-        return fhir_bundle
+            bundle.entry.append({
+                'resource': fhir_patient
+            })
+
+        return bundle
 ]]>
             </source-code>
             <!-- sub module functions metadata -->
@@ -225,14 +235,9 @@ class FHIRBundleCreator:
                     <description>Creates a FHIR Bundle resource from the parsed data.</description>
                     <input>
                         <parameter>
-                            <name>patient_id</name>
-                            <type>str</type>
-                            <description>The patient ID.</description>
-                        </parameter>
-                        <parameter>
-                            <name>patient_name</name>
-                            <type>str</type>
-                            <description>The patient name.</description>
+                            <name>patient_data</name>
+                            <type>list</type>
+                            <description>A list of dictionaries, where each dictionary contains the patient ID and name.</description>
                         </parameter>
                     </input>
                     <output>A FHIR Bundle resource.</output>
