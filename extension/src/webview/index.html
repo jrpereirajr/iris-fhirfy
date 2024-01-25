@@ -28,9 +28,9 @@
         }
 
         textarea {
-            width: 100%;
-            height: calc(100% - 20px); /* Adjust height for padding */
-            margin-bottom: 20px;
+            width: calc(100% - 5px);
+            height: calc(100% - 15px); /* Adjust height for padding */
+            margin: 10px 0 10px 0;
             resize: none;
         }
 
@@ -71,6 +71,18 @@
             cursor: pointer;
         }
 
+
+        .code-container {
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+
     </style>
 
     <title>FHIRfy - Analyze Data</title>
@@ -80,7 +92,6 @@
     <div class="container">
         <div id="card-container">
             <div id="instructions-card-1" class="instruction-card">
-                <div class="logo" style="display:block">FHIR<span class="fy-box">fy</span></div>
                 <p>
                     Welcome to FHIRfy, your intelligent FHIR data analysis companion.
                 </p>
@@ -164,6 +175,53 @@
             return genModelDiv;
         }
 
+
+        const parseMarkdownToHTML = (markdownText) => {
+            // Replace Markdown-style headers (##, ###, etc.) with corresponding HTML headers
+            markdownText = markdownText.replace(/^#{1,6}\s/gm, match => {
+                const headerLevel = match.trim().length;
+                return `<h${headerLevel}>`;
+            });
+
+            // Replace bold and italic markdown syntax with corresponding HTML tags
+            markdownText = markdownText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            markdownText = markdownText.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Replace Markdown-style lists with corresponding HTML lists
+            markdownText = markdownText.replace(/^\s*-\s(.*)$/gm, '<li>$1</li>');
+            markdownText = markdownText.replace(/<\/li><li>/g, '');
+
+            // Replace Markdown-style paragraphs with <p> tags
+            markdownText = markdownText.split('\n\n').map(paragraph => `<p>${paragraph}</p>`).join('');
+            markdownText = markdownText.replace(/```([\s\S]*?)```/g, (match, code) => {
+                return `<div class="code-container">
+                            <code>${code}</code>
+                            <div class="copy-button" onclick="copyCodeToClipboard(this)">
+                                <span>&#128203;</span> Copy code
+                            </div>
+                        </div>`;
+            });
+
+            return markdownText;
+        }
+
+        const copyCodeToClipboard = (button) => {
+            const codeElement = button.previousElementSibling,
+                codeToCopy = codeElement.innerText;
+
+            navigator.clipboard.writeText(codeToCopy)
+                .then(() => {
+                    // Provide visual feedback on successful copy
+                    button.innerHTML = '<span>&#10004;</span> Copied!';
+                    setTimeout(() => {
+                        button.innerHTML = '<span>&#128203;</span> Copy code';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy code to clipboard', err);
+                });
+        }
+
         const typeText = (element, text, interval, button) => {
             let index = 0;
 
@@ -183,6 +241,7 @@
                     }
                 } else {
                     clearInterval(typingInterval);
+                    element.innerHTML = parseMarkdownToHTML(element.innerHTML);
                     const chatContent = document.getElementById('chatContainer');
                     !!!button ? '' : chatContent.appendChild(button);
                 }
