@@ -18,12 +18,36 @@ const simulateTypingAnimation = (text, btn, container, req) => {
     type();
 }
 
+const copyCodeToClipboard = (button) => {
+    const codeElement = button.previousElementSibling,
+        codeToCopy = codeElement.innerText;
+
+    navigator.clipboard.writeText(codeToCopy)
+        .then(() => {
+            // Provide visual feedback on successful copy
+            button.innerHTML = '<span>&#10004;</span> Copied!';
+            setTimeout(() => {
+                button.innerHTML = '<span>&#128203;</span> Copy code';
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Failed to copy code to clipboard', err);
+        });
+}
+
 const addResponseToChat = (responseTextContent, btn, container, req) => {
     const newResponseDiv = document.createElement('div'),
         chatContainer = document.getElementById('chatContainer'),
         rawData = !!!container ? '' : container.textContent;
     newResponseDiv.className = 'response-text';
-    newResponseDiv.innerHTML = marked.marked(responseTextContent).replace(/```/g, '<pre>');
+    newResponseDiv.innerHTML = marked.marked(responseTextContent.replace(/```([\s\S]*?)```/g, (match, code) => {
+        return `<div class="code-container">
+                    <code>${code}</code>
+                    <div class="copy-button" onclick="copyCodeToClipboard(this)">
+                        <span>&#128203;</span> Copy code
+                    </div>
+                </div>`;
+    }));
 
     let button = (btn === 'suggest') ? suggestButton(responseTextContent, rawData) : (btn === 'model') ? generateModelButton(req) : '';
 

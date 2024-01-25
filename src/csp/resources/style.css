@@ -170,7 +170,7 @@ button:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #fff;
     border-radius: 10px;
-    overflow: hidden;
+    overflow: auto;
     transition: transform 0.3s ease-in-out;
     position: relative; /* Added position relative */
 }
@@ -237,4 +237,15 @@ button:hover {
     background-color: #feecf0;
     padding: 10px;
     margin-bottom: 10px;
+}
+
+.code-container {
+    position: relative;
+}
+
+.copy-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
 }
