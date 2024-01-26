@@ -4,6 +4,7 @@
     "version": "0.0.1",
     "description": "A simple FHIR data analyzer for Visual Studio Code",
     "main": "./out/extension.js",
+    "icon": "src/webview/icon.png",
     "engines": {
         "vscode": "^1.60.0"
     },
@@ -22,6 +23,13 @@
                 {
                     "command": "fhirfyAnalyzer.show",
                     "when": "resourceLangId == fhir"
+                }
+            ],
+            "activityBar": [
+                {
+                "command": "fhirfyAnalyzer.show",
+                "title": "FHIRfy Analyzer",
+                "icon": "src/webview/icon.png" 
                 }
             ]
         },

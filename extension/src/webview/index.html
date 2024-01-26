@@ -308,7 +308,7 @@
                 typingAnimation.classList.add('typing-animation');
                 chatContent.appendChild(typingAnimation);
                 if (!!!data) return console.log('No implementation found');
-                let gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n`;
+                let gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n [download the module](/download?moduleName=${data.name}) `;
                 if (data.hasOwnProperty("files")) data.files.forEach((file) => {
                     gen_module += `\n#### ${file.name}\n${!!!file.description ? '' : file.description}\n\`\`\`\n ${file["source-code"]}\n\`\`\`\n`
                 })

@@ -12,7 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
         username = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('username', '_SYSTEM'),
         password = vscode.workspace.getConfiguration('fhirfyAnalyzer').get('password', 'SYS'),
         apiURL = `http://${host}:${port}${endpoint}`,
-        fhirfyApi = new api.FHIRfyApi(apiURL, username, password);
+        fhirfyApi = new api.FHIRfyApi(apiURL, username, password),
+        iconPath = vscode.Uri.joinPath(context.extensionUri, 'src', 'webview', 'icon.png');
 
     console.log(`Configured endpoint: ${endpoint}, host: ${host}, port: ${port}, username: ${username}, password: ${password} API URL: ${apiURL}`);
 
@@ -114,17 +115,18 @@ export function activate(context: vscode.ExtensionContext) {
         );
 
     });
-    const icon = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
-    icon.text = "$(comment-discussion) FHIRfy Analyzer";
-    icon.command = 'fhirfyAnalyzer.show';
-    icon.show();
-    // Add an icon to the activity bar
-    // Register the command to show the panel
-    const disposable = vscode.commands.registerCommand('fhirfyAnalyzer.show', () => {
+
+    console.log(iconPath);
+    const disposable = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
+    disposable.text = "$(comment-discussion) FHIRfy Analyzer";
+    disposable.command = 'fhirfyAnalyzer.show';
+    disposable.tooltip = 'FHIRfy Analyzer';
+    disposable.show();
+    const showCommand = vscode.commands.registerCommand('fhirfyAnalyzer.show', () => {
         panel.reveal(vscode.ViewColumn.One);
     });
 
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(disposable, showCommand);
 }
 
 function getWebviewContent(context: vscode.ExtensionContext): Thenable<string> {

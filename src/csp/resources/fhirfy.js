@@ -204,7 +204,7 @@ generateModel = (request) => {
         console.log('generated module:', data);
 
         if (!!!data) return console.log('No implementation found');
-        gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n`;
+        gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n [download module](/download?moduleName=${data.name})\n `;
         if (data.hasOwnProperty("files")) data.files.forEach((file) => {
             gen_module += `\n#### ${file.name}\n${!!!file.description ? '' : file.description}\n\`\`\`\n ${file["source-code"]}\n\`\`\`\n`
         })
