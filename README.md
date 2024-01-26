@@ -495,3 +495,41 @@ cat fhir_bundle.json
 
 As you can see these are the patients in the original CSV converted into FHIR, as requested to the LLM.
 
+### Web Application
+
+### Mock Data
+
+If you don't have real data, you can choose the "Use Mock Data" option for a sample analysis.
+
+### Usage
+
+1. Enter your raw data in Markdown format into the provided textarea.
+
+2. Click the "Analyse it!" button to receive an analysis report.
+
+3. To suggest a solution based on the analysis, click "Suggest Implementation."
+
+4. Generate code for a chosen solution as a ZPM module by clicking "Generate Code."
+
+### Error Handling
+
+If there's an error during analysis or suggestion, an error message will be displayed above the response.
+
+## Visual Studio Code Extension
+
+### Installation
+
+1. Open Visual Studio Code and navigate to the Extensions tab.
+
+2. In the Extensions tab, open the options menu and select Install from VSIX.
+In the file picker dialog that opens, navigate to the project root and select the VSIX file.
+3. Install the extension by clicking the install button.
+4. Configure the FHIRfy Analyzer server settings in your Visual Studio Code settings:
+    - `fhirfyAnalyzer.host`: The host for the FHIRfy Analyzer server.
+    - `fhirfyAnalyzer.port`: The port for the FHIRfy Analyzer server.
+    - `fhirfyAnalyzer.username`: The username for the FHIRfy Analyzer server.
+    - `fhirfyAnalyzer.password`: The password for the FHIRfy Analyzer server.
+
+5. Use the `ctrl+alt+f` (or `cmd+alt+f` on macOS) keyboard shortcut or find the "FHIRfy Analyzer: Show" command to open the extension.
+6. Enjoy analyzing FHIR data directly within Visual Studio Code!
+
