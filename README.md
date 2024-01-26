@@ -495,7 +495,7 @@ cat fhir_bundle.json
 
 As you can see these are the patients in the original CSV converted into FHIR, as requested to the LLM.
 
-### Web Application
+## Web Application
 
 ### Mock Data
 
@@ -533,3 +533,9 @@ In the file picker dialog that opens, navigate to the project root and select th
 5. Use the `ctrl+alt+f` (or `cmd+alt+f` on macOS) keyboard shortcut or find the "FHIRfy Analyzer: Show" command to open the extension.
 6. Enjoy analyzing FHIR data directly within Visual Studio Code!
 
+
+# Dream team
+
+* [José Roberto Pereira](https://community.intersystems.com/user/jos%C3%A9-roberto-pereira-0)
+* [Henry Pereira](https://community.intersystems.com/user/henry-pereira)
+* [Henrique Dias](https://community.intersystems.com/user/henrique-dias-2)
