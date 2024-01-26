@@ -19,6 +19,12 @@ RUN --mount=type=bind,src=.,dst=. \
 
 FROM $IMAGE as final
 
+USER root
+
+RUN apt-get update && apt-get install -y curl nano python3.10-venv
+
+USER ${ISC_PACKAGE_MGRUSER}
+
 ADD --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} https://github.com/grongierisc/iris-docker-multi-stage-script/releases/latest/download/copy-data.py /irisdev/app/copy-data.py
 
 RUN --mount=type=bind,source=/,target=/builder/root,from=builder \
