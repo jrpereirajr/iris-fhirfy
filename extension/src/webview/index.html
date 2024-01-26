@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: space-between;
+        }
+
+        #chat-container {
+            max-width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .typing-animation {
+            word-wrap: break-word;
+        }
+
+        textarea {
+            width: calc(100% - 5px);
+            height: calc(100% - 15px); /* Adjust height for padding */
+            margin: 10px 0 10px 0;
+            resize: none;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #005294;
+        }
+
+
+        @keyframes typing {
+            from,
+            to {
+                border-right: 2px solid transparent;
+            }
+
+            50%,
+            90% {
+                border-right: 2px solid #000;
+            }
+        }
+
+        #suggestButton {
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007acc;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+
+        .code-container {
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+
+    </style>
+
+    <title>FHIRfy - Analyze Data</title>
+</head>
+
+<body>
+    <div class="container">
+        <div id="card-container">
+            <div id="instructions-card-1" class="instruction-card">
+                <p>
+                    Welcome to FHIRfy, your intelligent FHIR data analysis companion.
+                </p>
+                <h3>📝 Configure LLM API Key</h3>
+                <p>Before you start, make sure to configure your LLM API key on server for enhanced analysis.</p>
+                <p>Visit the server settings to input your ChatGPT or Gemini API key.</p>
+                <h3>🚀 Use Mock Data (Optional)</h3>
+                <p>
+                    <p>Don't have real data? No worries! Choose the option to use mock data for a sample analysis.</p>
+                    <label for="mockName">Select Mock Data:</label>
+                    <select id="mockName">
+                        <option value="" selected>No Mock</option>
+                        <option value="simple-csv">Simple CSV</option>
+                    </select>
+                </p>
+            </div>
+
+            <div id="instructions-card-2" class="instruction-card">
+                <h3>Step 1 - Input Raw Data Card 📝</h3>
+                <p>🌟 In the provided textarea, enter your raw data in Markdown format.</p>
+                <p>Example:</p>
+                <pre>Patient ID,Patient Name\n1,Patient 1\n2,Patient 2</pre>
+                <h3>Step 2 - Get Analysis Report 🕵️‍♂️</h3>
+                <p>Click "Analyze Data" to receive an analysis report.</p>
+                <p>If you need solutions, click "Suggest Implementation."</p>
+                <h3>Step 3 - Generate Code 🚧</h3>
+                <p>Generate code for a chosen solution as a ZPM module.</p>
+            </div>
+        
+        </div>
+        <div class="chat-container" id="chatContainer">
+        </div>
+        <div id="typing-animation" class="typing-animation"></div>
+        <div class="bottom-bar">
+            <textarea id="markdownInput" placeholder="Enter your data to analyse..."></textarea>
+            <button id="analyzeButton">Analyse it!</button>
+        </div>
+    </div>
+    <script>
+        console.log('everything is ok');
+        const vscode = acquireVsCodeApi();
+                    
+        const displayErrorMessage = (message) => {
+            const errorMessageDiv = document.createElement('div');
+            errorMessageDiv.classList.add('error-message');
+            errorMessageDiv.textContent = message;
+
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.appendChild(errorMessageDiv);
+        };
+
+        const suggestButton = (request) => {
+            const suggestDiv = document.createElement('div'), 
+                suggestButton = document.createElement('button');
+            suggestButton.className = 'suggest-button';
+            suggestButton.textContent = 'Suggest Implementation';
+            suggestButton.addEventListener('click', () => {
+                vscode.postMessage({
+                    command: 'suggestSolution',
+                    text: JSON.stringify(request),
+                    mock: document.getElementById('mockName').value
+                });
+            });
+            suggestDiv.appendChild(suggestButton);
+            return suggestDiv;
+        }
+
+        const generateModelButton = (request) => {
+            const genModelDiv = document.createElement('div'), 
+                genModelButton = document.createElement('button');
+            genModelButton.className = 'gen-model-button';
+            genModelButton.textContent = 'Generate Model';
+            genModelButton.addEventListener('click', () => {
+                vscode.postMessage({
+                    command: 'generateModule',
+                    text: request,
+                    mock: document.getElementById('mockName').value
+                });
+            });
+            genModelDiv.appendChild(genModelButton);
+            return genModelDiv;
+        }
+
+
+        const parseMarkdownToHTML = (markdownText) => {
+            // Replace Markdown-style headers (##, ###, etc.) with corresponding HTML headers
+            markdownText = markdownText.replace(/^#{1,6}\s/gm, match => {
+                const headerLevel = match.trim().length;
+                return `<h${headerLevel}>`;
+            });
+
+            // Replace bold and italic markdown syntax with corresponding HTML tags
+            markdownText = markdownText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            markdownText = markdownText.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Replace Markdown-style lists with corresponding HTML lists
+            markdownText = markdownText.replace(/^\s*-\s(.*)$/gm, '<li>$1</li>');
+            markdownText = markdownText.replace(/<\/li><li>/g, '');
+
+            // Replace Markdown-style paragraphs with <p> tags
+            markdownText = markdownText.split('\n\n').map(paragraph => `<p>${paragraph}</p>`).join('');
+            markdownText = markdownText.replace(/```([\s\S]*?)```/g, (match, code) => {
+                return `<div class="code-container">
+                            <code>${code}</code>
+                            <div class="copy-button" onclick="copyCodeToClipboard(this)">
+                                <span>&#128203;</span> Copy code
+                            </div>
+                        </div>`;
+            });
+
+            return markdownText;
+        }
+
+        const copyCodeToClipboard = (button) => {
+            const codeElement = button.previousElementSibling,
+                codeToCopy = codeElement.innerText;
+
+            navigator.clipboard.writeText(codeToCopy)
+                .then(() => {
+                    // Provide visual feedback on successful copy
+                    button.innerHTML = '<span>&#10004;</span> Copied!';
+                    setTimeout(() => {
+                        button.innerHTML = '<span>&#128203;</span> Copy code';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy code to clipboard', err);
+                });
+        }
+
+        const typeText = (element, text, interval, button) => {
+            let index = 0;
+
+            function type() {
+                if (index < text.length) {
+                    // Check for HTML tags and render them
+                    if (text[index] === '<') {
+                        const endIndex = text.indexOf('>', index);
+                        if (endIndex !== -1) {
+                            const htmlTag = text.substring(index, endIndex + 1);
+                            element.innerHTML += htmlTag;
+                            index = endIndex + 1;
+                        }
+                    } else {
+                        element.innerHTML += text.charAt(index);
+                        index++;
+                    }
+                } else {
+                    clearInterval(typingInterval);
+                    element.innerHTML = parseMarkdownToHTML(element.innerHTML);
+                    const chatContent = document.getElementById('chatContainer');
+                    !!!button ? '' : chatContent.appendChild(button);
+                }
+            }
+
+            const typingInterval = setInterval(type, interval);
+        }
+
+        document.getElementById('analyzeButton').addEventListener('click', () => {
+            const markdownContent = document.getElementById('markdownInput').value;
+
+            if (markdownContent.length < 1) return
+            document.getElementById('card-container').style.display = 'none';
+
+            try {
+                console.log('Sending message to extension:', { command: 'analyzeData', text: markdownContent });
+                vscode.postMessage({
+                    command: 'analyzeData',
+                    text: markdownContent,
+                    mock: document.getElementById('mockName').value
+                });
+            } catch (error) {
+                console.warn('Failed to send message to extension:', error);
+            }
+        });
+
+
+        window.addEventListener('message', (event) => {
+            const message = event.data,
+                chatContent = document.getElementById('chatContainer');
+
+            if (message.command === 'analysisResult') {
+                console.log(message);
+                const analysisResult = message.result,
+                    typingAnimation = document.createElement('div');
+                typingAnimation.classList.add('typing-animation');
+                chatContent.appendChild(typingAnimation);
+                req = {"rawData": document.getElementById('markdownInput').value, "analysis": analysisResult};
+                typeText(typingAnimation, `<p>${analysisResult.replace(/\n/g, '<br/>')}</p>`, 15, suggestButton(req));
+                chatContent.scrollTop = chatContent.scrollHeight;
+            }
+
+            if (message.command === 'solutionResult') {
+                console.log(message);
+                const data = message.result,
+                    typingAnimation = document.createElement('div');
+                typingAnimation.classList.add('typing-animation');
+                chatContent.appendChild(typingAnimation);
+                if (!!!data.solutionSuggestion) return console.log('No implementation found');
+                let suggestion = `## ${data.solutionSuggestion.name}\n${data.solutionSuggestion.description}`;
+                if (data.solutionSuggestion.hasOwnProperty("subModules")) data.solutionSuggestion.subModules.subModule.forEach((submodule) => {
+                    suggestion += `\n\n### ${submodule.name}\n${submodule.description}`
+                })
+                suggestion += !!!data.solutionSuggestion.pseudoCode ? '' : `\n## Pseudo Code\n\`\`\`\n ${data.solutionSuggestion.pseudoCode}\n\`\`\`\n`	
+        
+                typeText(typingAnimation, !!!suggestion ? '' : `<p>${suggestion.replace(/\n/g, '<br/>')}</p>`, 15, generateModelButton(JSON.stringify(data)));
+                chatContent.scrollTop = chatContent.scrollHeight;
+            }
+
+            if (message.command === 'modelResult') {
+                console.log(message);
+                const data = message.result,
+                    typingAnimation = document.createElement('div');
+                typingAnimation.classList.add('typing-animation');
+                chatContent.appendChild(typingAnimation);
+                if (!!!data) return console.log('No implementation found');
+                let gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n [download the module](/download?moduleName=${data.name}) `;
+                if (data.hasOwnProperty("files")) data.files.forEach((file) => {
+                    gen_module += `\n#### ${file.name}\n${!!!file.description ? '' : file.description}\n\`\`\`\n ${file["source-code"]}\n\`\`\`\n`
+                })
+                req = {"rawData": document.getElementById('markdownInput').value, "analysis": JSON.stringify(data)};
+                typeText(typingAnimation, !!!gen_module ? '' : `<p>${gen_module.replace(/\n/g, '<br/>')}</p>`, 15);
+                chatContent.scrollTop = chatContent.scrollHeight;
+            }
+
+            if (message.command === 'error') {
+                const errorMessage = message.error;
+                console.error('Webview Error:', errorMessage);
+                displayErrorMessage(errorMessage);
+            }
+        });
+
+    </script>
+</body>
+
+</html>

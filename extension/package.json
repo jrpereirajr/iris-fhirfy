@@ -1,0 +1,96 @@
+{
+    "name": "fhirfy-analyzer",
+    "displayName": "FHIRfy Analyzer",
+    "version": "0.0.1",
+    "description": "A simple FHIR data analyzer for Visual Studio Code",
+    "main": "./out/extension.js",
+    "icon": "src/webview/icon.png",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "activationEvents": [
+        "onCommand:fhirfyAnalyzer.show"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "command": "fhirfyAnalyzer.show",
+                "title": "FHIRfy Analyzer: Show"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "fhirfyAnalyzer.show",
+                    "when": "resourceLangId == fhir"
+                }
+            ],
+            "activityBar": [
+                {
+                "command": "fhirfyAnalyzer.show",
+                "title": "FHIRfy Analyzer",
+                "icon": "src/webview/icon.png" 
+                }
+            ]
+        },
+        "configuration": {
+            "title": "FHIRfy Analyzer",
+            "properties": {
+                "fhirfyAnalyzer.endpoint": {
+                    "type": "string",
+                    "default": "/csp/api/dc/fhirfy",
+                    "description": "The endpoint root for the FHIRfy Analyzer services"
+                },
+                "fhirfyAnalyzer.host": {
+                    "type": "string",
+                    "default": "localhost",
+                    "description": "The host for the FHIRfy Analyzer server"
+                },
+                "fhirfyAnalyzer.port": {
+                    "type": "number",
+                    "default": 32783,
+                    "description": "The port for the FHIRfy Analyzer server"
+                },
+                "fhirfyAnalyzer.username": {
+                    "type": "string",
+                    "default": "_SYSTEM",
+                    "description": "The username for the FHIRfy Analyzer server"
+                },
+                "fhirfyAnalyzer.password": {
+                    "type": "string",
+                    "default": "SYS",
+                    "description": "The password for the FHIRfy Analyzer server"
+                }
+            }
+        }
+    },
+    "keybindings": [
+        {
+            "command": "fhirfyAnalyzer.show",
+            "key": "ctrl+alt+f",
+            "mac": "cmd+alt+f"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jrpereirajr/iris-fhirfy.git"
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "package": "vsce package",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "vscode",
+        "extension"
+    ],
+    "author": "henryhamon, jrobertojr, diashenrique",
+    "license": "MIT",
+    "devDependencies": {
+        "typescript": "^4.5.5",
+        "vscode": "^1.0.0"
+    }
+}

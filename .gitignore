@@ -1,2 +1,4 @@
 .DS_Store
 tmp
+extension/out/*
+extension/node_modules/*
