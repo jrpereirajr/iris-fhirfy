@@ -8,6 +8,7 @@ Parameter ExposeServerExceptions = 0;
 
 ClassMethod GetAPI(mockName As %String) As dc.jrpereira.fhirfy.core.API
 {
+    Set mockName = $GET(mockName)
     If (mockName = "") {
         Return ##class(dc.jrpereira.fhirfy.core.API).%New()
     } Else {
@@ -19,10 +20,11 @@ ClassMethod GetAPI(mockName As %String) As dc.jrpereira.fhirfy.core.API
 /// The method arguments hold values for:<br/>
 ///     input<br/>
 ///     mockName<br/>
-ClassMethod analyzeData(input As %DynamicObject, mockName As %String = "") As %DynamicObject
+ClassMethod analyzeData(input As %DynamicObject, mockName As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
     //Do ..%SetHeader(<name>,<value>)
+    Set mockName = $GET(mockName)
     Set api = ..GetAPI(mockName)
     Return api.AnalyzeData(input)
 }
@@ -31,10 +33,11 @@ ClassMethod analyzeData(input As %DynamicObject, mockName As %String = "") As %D
 /// The method arguments hold values for:<br/>
 ///     input<br/>
 ///     mockName<br/>
-ClassMethod suggestSolution(input As %DynamicObject, mockName As %String = "") As %DynamicObject
+ClassMethod suggestSolution(input As %DynamicObject, mockName As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
     //Do ..%SetHeader(<name>,<value>)
+    Set mockName = $GET(mockName)
     Set api = ..GetAPI(mockName)
     Return api.SuggestSolution(input)
 }
@@ -43,10 +46,11 @@ ClassMethod suggestSolution(input As %DynamicObject, mockName As %String = "") A
 /// The method arguments hold values for:<br/>
 ///     input<br/>
 ///     mockName<br/>
-ClassMethod generateModule(input As %DynamicObject, mockName As %String = "") As %DynamicObject
+ClassMethod generateModule(input As %DynamicObject, mockName As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
     //Do ..%SetHeader(<name>,<value>)
+    Set mockName = $GET(mockName)
     Set api = ..GetAPI(mockName)
     Return api.GenerateModule(input)
 }
