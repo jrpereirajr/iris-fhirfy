@@ -27,6 +27,14 @@ paths:
           in: query
           type: string
           required: false
+        - name: X-FHIRFY-LLM-PROVIDER
+          in: header
+          type: string
+          required: false
+        - name: X-FHIRFY-LLM-APIKEY
+          in: header
+          type: string
+          required: false
       responses:
         "200":
           description: Successful analysis response
@@ -52,6 +60,14 @@ paths:
           in: query
           type: string
           required: false
+        - name: X-FHIRFY-LLM-PROVIDER
+          in: header
+          type: string
+          required: false
+        - name: X-FHIRFY-LLM-APIKEY
+          in: header
+          type: string
+          required: false
       responses:
         "200":
           description: Successful solution suggestion response
@@ -75,6 +91,14 @@ paths:
             $ref: "#/definitions/GenerateModuleRequest"
         - name: mockName
           in: query
+          type: string
+          required: false
+        - name: X-FHIRFY-LLM-PROVIDER
+          in: header
+          type: string
+          required: false
+        - name: X-FHIRFY-LLM-APIKEY
+          in: header
           type: string
           required: false
       responses:

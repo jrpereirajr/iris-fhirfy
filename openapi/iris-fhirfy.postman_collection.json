@@ -39,7 +39,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-fhirfy-llm-apikey",
+						"key": "X-FHIRFY-LLM-APIKEY",
 						"value": "<you-api-key>",
 						"description": "You LLM service API key",
 						"type": "text",
@@ -127,7 +127,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-fhirfy-llm-apikey",
+						"key": "X-FHIRFY-LLM-APIKEY",
 						"value": "<you-api-key>",
 						"description": "You LLM service API key",
 						"type": "text",
@@ -194,7 +194,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-fhirfy-llm-apikey",
+						"key": "X-FHIRFY-LLM-APIKEY",
 						"value": "<you-api-key>",
 						"description": "You LLM service API key",
 						"type": "text",

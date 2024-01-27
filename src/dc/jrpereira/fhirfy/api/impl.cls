@@ -1,5 +1,5 @@
 /// Business logic class defined by OpenAPI in dc.jrpereira.fhirfy.api.spec<br/>
-/// Updated Jan 23, 2024 01:21:50
+/// Updated Jan 27, 2024 15:04:00
 Class dc.jrpereira.fhirfy.api.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -49,7 +49,10 @@ ClassMethod GetAPI(mockName As %String) As dc.jrpereira.fhirfy.core.API
 /// The method arguments hold values for:<br/>
 ///     input<br/>
 ///     mockName<br/>
-ClassMethod analyzeData(input As %DynamicObject, mockName As %String) As %DynamicObject
+///     X-FHIRFY-LLM-PROVIDER<br/>
+///     X-FHIRFY-LLM-APIKEY<br/>
+/// WARNING: This method's signature has changed.
+ClassMethod analyzeData(input As %DynamicObject, mockName As %String, XFHIRFYLLMPROVIDER As %String, XFHIRFYLLMAPIKEY As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
     //Do ..%SetHeader(<name>,<value>)
@@ -62,7 +65,10 @@ ClassMethod analyzeData(input As %DynamicObject, mockName As %String) As %Dynami
 /// The method arguments hold values for:<br/>
 ///     input<br/>
 ///     mockName<br/>
-ClassMethod suggestSolution(input As %DynamicObject, mockName As %String) As %DynamicObject
+///     X-FHIRFY-LLM-PROVIDER<br/>
+///     X-FHIRFY-LLM-APIKEY<br/>
+/// WARNING: This method's signature has changed.
+ClassMethod suggestSolution(input As %DynamicObject, mockName As %String, XFHIRFYLLMPROVIDER As %String, XFHIRFYLLMAPIKEY As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
     //Do ..%SetHeader(<name>,<value>)
@@ -75,7 +81,10 @@ ClassMethod suggestSolution(input As %DynamicObject, mockName As %String) As %Dy
 /// The method arguments hold values for:<br/>
 ///     input<br/>
 ///     mockName<br/>
-ClassMethod generateModule(input As %DynamicObject, mockName As %String) As %DynamicObject
+///     X-FHIRFY-LLM-PROVIDER<br/>
+///     X-FHIRFY-LLM-APIKEY<br/>
+/// WARNING: This method's signature has changed.
+ClassMethod generateModule(input As %DynamicObject, mockName As %String, XFHIRFYLLMPROVIDER As %String, XFHIRFYLLMAPIKEY As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
     //Do ..%SetHeader(<name>,<value>)

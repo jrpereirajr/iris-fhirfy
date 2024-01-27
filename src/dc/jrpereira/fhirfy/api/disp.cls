@@ -44,7 +44,13 @@ ClassMethod analyzeData() As %Status
         If $data(%request.Data("mockName",1)) {
             Set pmockName=%request.Data("mockName",1)
         }
-        Set response=##class(dc.jrpereira.fhirfy.api.impl).analyzeData(pinput,.pmockName)
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")) {
+            Set pXFHIRFYLLMPROVIDER=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")
+        }
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")) {
+            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")
+        }
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).analyzeData(pinput,.pmockName,.pXFHIRFYLLMPROVIDER,.pXFHIRFYLLMAPIKEY)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(dc.jrpereira.fhirfy.api.impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
@@ -67,7 +73,13 @@ ClassMethod suggestSolution() As %Status
         If $data(%request.Data("mockName",1)) {
             Set pmockName=%request.Data("mockName",1)
         }
-        Set response=##class(dc.jrpereira.fhirfy.api.impl).suggestSolution(pinput,.pmockName)
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")) {
+            Set pXFHIRFYLLMPROVIDER=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")
+        }
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")) {
+            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")
+        }
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).suggestSolution(pinput,.pmockName,.pXFHIRFYLLMPROVIDER,.pXFHIRFYLLMAPIKEY)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(dc.jrpereira.fhirfy.api.impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))
@@ -90,7 +102,13 @@ ClassMethod generateModule() As %Status
         If $data(%request.Data("mockName",1)) {
             Set pmockName=%request.Data("mockName",1)
         }
-        Set response=##class(dc.jrpereira.fhirfy.api.impl).generateModule(pinput,.pmockName)
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")) {
+            Set pXFHIRFYLLMPROVIDER=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")
+        }
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")) {
+            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")
+        }
+        Set response=##class(dc.jrpereira.fhirfy.api.impl).generateModule(pinput,.pmockName,.pXFHIRFYLLMPROVIDER,.pXFHIRFYLLMAPIKEY)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(dc.jrpereira.fhirfy.api.impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("dc.jrpereira.fhirfy.api.impl","ExposeServerExceptions"))

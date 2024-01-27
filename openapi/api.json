@@ -40,6 +40,18 @@
             "in": "query",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "X-FHIRFY-LLM-PROVIDER",
+            "in": "header",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "X-FHIRFY-LLM-APIKEY",
+            "in": "header",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {
@@ -77,6 +89,18 @@
             "in": "query",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "X-FHIRFY-LLM-PROVIDER",
+            "in": "header",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "X-FHIRFY-LLM-APIKEY",
+            "in": "header",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {
@@ -112,6 +136,18 @@
           {
             "name": "mockName",
             "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "X-FHIRFY-LLM-PROVIDER",
+            "in": "header",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "X-FHIRFY-LLM-APIKEY",
+            "in": "header",
             "type": "string",
             "required": false
           }
