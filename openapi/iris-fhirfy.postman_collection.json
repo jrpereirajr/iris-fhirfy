@@ -30,6 +30,20 @@
 						"key": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "X-FHIRFY-LLM-PROVIDER",
+						"value": "openai",
+						"description": "gemini (default) | openai",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-fhirfy-llm-apikey",
+						"value": "<you-api-key>",
+						"description": "You LLM service API key",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -104,6 +118,20 @@
 						"key": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "X-FHIRFY-LLM-PROVIDER",
+						"value": "openai",
+						"description": "gemini (default) | openai",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-fhirfy-llm-apikey",
+						"value": "<you-api-key>",
+						"description": "You LLM service API key",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -157,6 +185,20 @@
 						"key": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "X-FHIRFY-LLM-PROVIDER",
+						"value": "openai",
+						"description": "gemini (default) | openai",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-fhirfy-llm-apikey",
+						"value": "<you-api-key>",
+						"description": "You LLM service API key",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
