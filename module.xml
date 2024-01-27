@@ -29,7 +29,7 @@
       <Resource Name="dc.jrpereira.fhirfy.PKG"/>
       <UnitTest Name="/tests" Package="dc.jrpereira.fhirfy.unittests" Phase="test"/>
       <CSPApplication CookiePath="/csp/api/dc/fhirfy/" DefaultTimeout="900" DispatchClass="dc.jrpereira.fhirfy.api.disp" PasswordAuthEnabled="0" Recurse="1" ServeFiles="1" ServeFilesTimeout="3600" UnauthenticatedEnabled="1" Url="/csp/api/dc/fhirfy" UseSessionCookie="2" MatchRoles=":{$dbrole}" />
-      <CSPApplication CookiePath="/csp/dc/fhirfy/" DefaultTimeout="900" DeployPath="{cspdir}/csp/${namespace}/" Description="FHIRfy" MatchRoles=":{$dbrole}" PasswordAuthEnabled="0" Recurse="1" ServeFiles="1" ServeFilesTimeout="3600" SourcePath="/src/csp" UnauthenticatedEnabled="1" Url="/csp/fhirfy" UseSessionCookie="2"/>
+      <CSPApplication CookiePath="/csp/dc/fhirfy/" DefaultTimeout="900" DeployPath="${cspdir}/${namespace}/" Description="FHIRfy" MatchRoles=":{$dbrole}" PasswordAuthEnabled="0" Recurse="1" ServeFiles="1" ServeFilesTimeout="3600" SourcePath="/src/csp" UnauthenticatedEnabled="1" Url="/csp/fhirfy" UseSessionCookie="2"/>
     </Module>
   </Document>
 </Export>
