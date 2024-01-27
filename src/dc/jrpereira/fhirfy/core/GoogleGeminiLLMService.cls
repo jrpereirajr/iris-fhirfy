@@ -8,7 +8,7 @@ Method SendPrompt(prompt As %String, params As %DynamicObject = {{}}) As %Dynami
     import google.generativeai as genai
     import os
 
-    gemini_api_key = self.GetAPIKey(os.environ["GEMINI_API_KEY"])
+    gemini_api_key = self.GetAPIKey(s.environ.get("GEMINI_API_KEY"))
     genai.configure(api_key = gemini_api_key)
 
     model_name = 'gemini-pro'
