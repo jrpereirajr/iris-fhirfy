@@ -9,6 +9,13 @@ Parameter ExposeServerExceptions = 0;
 ClassMethod %ReportRESTError(statusCode As %String, sc As %Status, exposeServerExceptions As %Boolean = 0)
 {
     Set ex = ##class(%Exception.StatusException).CreateFromStatus(sc)
+
+    Set errorDesc = ex.DisplayString()
+    Set llmService = ##class(dc.jrpereira.fhirfy.core.LLMService).GetLLMService()
+    If (llmService).IsProviderException(errorDesc) {
+        Set exposeServerExceptions = 1
+    }
+
     JOB ..Log(ex.DisplayString())
     Do ##super(statusCode, sc, exposeServerExceptions)
 }

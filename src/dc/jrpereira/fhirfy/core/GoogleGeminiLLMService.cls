@@ -1,12 +1,14 @@
-Class dc.jrpereira.fhirfy.core.GoogleGeminiService Extends LLMService
+Class dc.jrpereira.fhirfy.core.GoogleGeminiLLMService Extends LLMService
 {
+
+Parameter ServiceID = "gemini";
 
 Method SendPrompt(prompt As %String, params As %DynamicObject = {{}}) As %DynamicObject [ Language = python ]
 {
     import google.generativeai as genai
     import os
 
-    gemini_api_key = os.environ["GEMINI_API_KEY"]
+    gemini_api_key = self.GetAPIKey(os.environ["GEMINI_API_KEY"])
     genai.configure(api_key = gemini_api_key)
 
     model_name = 'gemini-pro'
@@ -21,6 +23,11 @@ Method SendPrompt(prompt As %String, params As %DynamicObject = {{}}) As %Dynami
 
     respose = generate_content(prompt)
     return respose.text
+}
+
+Method IsProviderException(errorDesc As %String) As %Boolean
+{
+    Return $FIND(errorDesc,"<class 'google.api_core.exceptions") > 0
 }
 
 }

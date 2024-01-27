@@ -1,15 +1,57 @@
 Class dc.jrpereira.fhirfy.core.LLMService Extends %RegisteredObject [ Abstract ]
 {
 
+Parameter ServiceID;
+
 Method SendPrompt(prompt As %String, params As %DynamicObject = {{}}) As %DynamicObject [ Language = python ]
 {
     raise Exception("Not implemented")
 }
 
-ClassMethod GetLLMService(provider As %String = "default") As LLMService
+ClassMethod GetLLMService(provider As %String = "") As LLMService
 {
-    // todo:
-    Return ##class(GoogleGeminiService).%New()
+    If ($ISOBJECT($GET(%llmProvider))) {
+        Return %llmProvider
+    }
+
+    Set provider = ..GetProviderID(provider)
+    If (provider = "") || (provider = ##class(dc.jrpereira.fhirfy.core.GoogleGeminiLLMService).#ServiceID) {
+        Set instance = ##class(dc.jrpereira.fhirfy.core.GoogleGeminiLLMService).%New()
+    } ElseIf (provider = ##class(dc.jrpereira.fhirfy.core.OpenAILLMService).#ServiceID) {
+        Set instance = ##class(dc.jrpereira.fhirfy.core.OpenAILLMService).%New()
+    } Else {
+        Throw ##class(%Exception.General).%New("Invalid LLM provider")
+    }
+    Set %llmProvider = instance
+    Return instance
+}
+
+ClassMethod GetProviderID(provider As %String) As %String
+{
+    If (provider = "") {
+        #Dim %request As %CSP.Request
+        Set requestProvider = %request.GetCgiEnv("HTTP_X_FHIRFY_LLM_PROVIDER")
+        If (requestProvider '= "") {
+            Set provider = requestProvider
+        }
+    }
+    Return provider
+}
+
+ClassMethod GetAPIKey(defaultKey As %String) As %String
+{
+    #Dim %request As %CSP.Request
+    Set requestKey = %request.GetCgiEnv("HTTP_X_FHIRFY_LLM_APIKEY")
+    If (requestKey '= "") {
+        Return requestKey
+    } Else {
+        Return defaultKey
+    }
+}
+
+Method IsProviderException(errorDesc As %String) As %Boolean
+{
+    Return 0
 }
 
 }
