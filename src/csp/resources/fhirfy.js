@@ -139,6 +139,27 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
     });
+    
+    let mockName = document.getElementById('mockName');
+    mockName.addEventListener('change', (evt) => {
+        let markdownInput = document.getElementById('markdownInput');
+        if (evt.target.value) {
+            fetch(`/csp/api/dc/fhirfy/mock/${evt.target.value}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa(`${username}:${password}`) 
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    markdownInput.value = data.analysisInput;
+                });
+        } else {
+            markdownInput.value = '';
+        }
+        markdownInput.focus();
+    })
 });
 
 document.addEventListener('keydown', (event) => {
