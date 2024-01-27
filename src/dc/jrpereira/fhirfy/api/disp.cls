@@ -1,9 +1,6 @@
 /// Dispatch class defined by RESTSpec in dc.jrpereira.fhirfy.api.spec
-Class dc.jrpereira.fhirfy.api.disp Extends %CSP.REST [ GeneratedBy = dc.jrpereira.fhirfy.api.spec.cls, ProcedureBlock ]
+Class dc.jrpereira.fhirfy.api.disp Extends %CSP.REST
 {
-
-/// The class containing the RESTSpec which generated this class
-Parameter SpecificationClass = "dc.jrpereira.fhirfy.api.spec";
 
 /// Ignore any writes done directly by the REST method.
 Parameter IgnoreWrites = 1;
