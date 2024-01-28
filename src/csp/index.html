@@ -46,10 +46,19 @@
                 <p>
                     <p>Don't have real data? No worries! Choose the option to use mock data for a sample analysis.</p>
                     <label for="mockName">Select Mock Data:</label>
-                    <select id="mockName" onselect="alert('ok')">
-                        <option value="" selected>No Mock</option>
-                        <option value="simple-csv">Simple CSV</option>
+                    <select id="mockName">
+                        <option value="">No Mock</option>
+                        <option value="simple-csv" selected>Simple CSV</option>
                     </select>
+                    <div id="llmSettings">
+                        <label for="llmProvider">LLM provider</label>
+                        <select id="llmProvider">
+                            <option value="openai" selected>OpenAI</option>
+                            <option value="gemini">Gemini</option>
+                        </select>
+                        <label for="llmApiKey">LLM API key</label>
+                        <input type="text" id="llmApiKey" name="llmApiKey" value="">
+                    </div>
                 </p>
 
                 <h3>📝 Step 1 - Input Raw Data Card</h3>

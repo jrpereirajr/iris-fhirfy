@@ -69,7 +69,6 @@ ClassMethod analyzeData(input As %DynamicObject, mockName As %String, XFHIRFYLLM
 ClassMethod suggestSolution(input As %DynamicObject, mockName As %String, XFHIRFYLLMPROVIDER As %String, XFHIRFYLLMAPIKEY As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
-    //Do ..%SetHeader(<name>,<value>)
     Set mockName = $GET(mockName)
     Set api = ..GetAPI(mockName)
     Return api.SuggestSolution(input)
@@ -85,7 +84,6 @@ ClassMethod suggestSolution(input As %DynamicObject, mockName As %String, XFHIRF
 ClassMethod generateModule(input As %DynamicObject, mockName As %String, XFHIRFYLLMPROVIDER As %String, XFHIRFYLLMAPIKEY As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
-    //Do ..%SetHeader(<name>,<value>)
     Set mockName = $GET(mockName)
     Set api = ..GetAPI(mockName)
     Return api.GenerateModule(input)
@@ -95,7 +93,6 @@ ClassMethod generateModule(input As %DynamicObject, mockName As %String, XFHIRFY
 ClassMethod mockSimpleCSV() As %DynamicObject
 {
     Do ..%SetStatusCode(200)
-    //Do ..%SetHeader(<name>,<value>)
     Set api = ..GetAPI("simple-csv")
     Return api.GetMockData()
 }

@@ -117,18 +117,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const username = document.getElementById('username').value,
             password = document.getElementById('password').value,
-            mockName = document.getElementById('mockName').value;
+            mockName = document.getElementById('mockName').value,
+            llmProvider = document.getElementById('llmProvider').value,
+            llmApiKey = document.getElementById('llmApiKey').value;
+        window._analysis = '';
         fetch(`/csp/api/dc/fhirfy/analyze-data${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa(`${username}:${password}`) 
+                'Authorization': 'Basic ' + btoa(`${username}:${password}`),
+                'X-FHIRFY-LLM-PROVIDER': llmProvider,
+                'X-FHIRFY-LLM-API-KEY': llmApiKey
             },
             body: JSON.stringify({ input: { rawData: markdownText } })
         })
             .then(response => response.json())
             .then(data => {
                 apiResponse = data.markdownResponse;
+                window._analysis = apiResponse
                 simulateTypingAnimation(apiResponse, 'suggest', responseDiv);
                 submitButton.querySelector('.fa-spinner').remove();
             })
@@ -143,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let mockName = document.getElementById('mockName');
     mockName.addEventListener('change', (evt) => {
         let markdownInput = document.getElementById('markdownInput');
+        showLLMSettings(evt.target.value);
         if (evt.target.value) {
             fetch(`/csp/api/dc/fhirfy/mock/${evt.target.value}`, {
                 method: 'GET',
@@ -159,7 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
             markdownInput.value = '';
         }
         markdownInput.focus();
-    })
+    });
+
+    showLLMSettings = (selectedLLM) => {
+        document.getElementById('llmSettings').style.display = !selectedLLM ? 'block' : 'none';
+    }
+
+    showLLMSettings(document.getElementById('llmProvider').value);
 });
 
 document.addEventListener('keydown', (event) => {
@@ -180,16 +193,20 @@ const saveSettings = () => {
 suggestImplementation = (request) => {
     const username = document.getElementById('username').value,
         password = document.getElementById('password').value,
-        mockName = document.getElementById('mockName').value;
+        mockName = document.getElementById('mockName').value,
+        llmProvider = document.getElementById('llmProvider').value,
+        llmApiKey = document.getElementById('llmApiKey').value;
     console.log(request);
 
     fetch(`/csp/api/dc/fhirfy/suggest-solution${ !!!mockName ? '' : `?mockName=${mockName}`}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+            'Authorization': 'Basic ' + btoa(`${username}:${password}`),
+            'X-FHIRFY-LLM-PROVIDER': llmProvider,
+            'X-FHIRFY-LLM-API-KEY': llmApiKey
         },
-        body: JSON.stringify(request)
+        body: JSON.stringify({ input: request })
     })
     .then(response => response.json())
     .then(data => {
@@ -200,7 +217,8 @@ suggestImplementation = (request) => {
             suggestion += `\n\n### ${submodule.name}\n${submodule.description}`
         })
         suggestion += !!!data.solutionSuggestion.pseudoCode ? '' : `\n## Pseudo Code\n\`\`\`\n ${data.solutionSuggestion.pseudoCode}\n\`\`\`\n`	
-        simulateTypingAnimation(suggestion, 'model', null, data.solutionSuggestion);
+        // simulateTypingAnimation(suggestion, 'model', null, data.solutionSuggestion);
+        simulateTypingAnimation(suggestion, 'model', null, {"analysis": window._analysis, "solutionSuggestion": data.solutionSuggestion});
     })
     .catch(error => {
         console.error('Error suggesting implementation:', error);
@@ -211,14 +229,18 @@ suggestImplementation = (request) => {
 generateModel = (request) => {
     const username = document.getElementById('username').value,
         password = document.getElementById('password').value,
-        mockName = document.getElementById('mockName').value;
+        mockName = document.getElementById('mockName').value,
+        llmProvider = document.getElementById('llmProvider').value,
+        llmApiKey = document.getElementById('llmApiKey').value;
     fetch(`/csp/api/dc/fhirfy/generate-module${ !!!mockName ? '': `?mockName=${mockName}`}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+            'Authorization': 'Basic ' + btoa(`${username}:${password}`),
+            'X-FHIRFY-LLM-PROVIDER': llmProvider,
+            'X-FHIRFY-LLM-API-KEY': llmApiKey
         },
-        body: JSON.stringify(request)
+        body: JSON.stringify({"input": request})
     })
     .then(response => response.json())
     .then(data => {
