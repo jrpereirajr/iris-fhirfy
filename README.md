@@ -4,6 +4,7 @@
 
 - [IRIS-FHIRfy](#iris-fhirfy)
   - [Motivation](#motivation)
+  - [How it works?](#how-it-works)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
     - [Setting a LLM API key](#setting-a-llm-api-key)
@@ -37,6 +38,20 @@ Healthcare data is incredibly diverse, ranging from structured electronic health
 InterSystems IRIS, with its powerful interoperability capabilities, emerges as a valuable tool for addressing these challenges. IRIS provides a robust platform for data integration, transformation, and routing, making it easier to handle the variety of healthcare data formats. Its ability to connect disparate systems and support FHIR standards natively makes it a natural choice for healthcare interoperability projects.
 
 The motivation behind the IRIS-FHIRfy project stems from recognizing the critical need to simplify the conversion of raw healthcare data into the FHIR format. By leveraging the capabilities of InterSystems IRIS and Language Model Models (LLMs), such as advanced natural language processing, IRIS-FHIRfy aims to empower developers with a streamlined solution. This project seeks to expedite the process of converting diverse healthcare data sources into FHIR, reducing development effort and accelerating the adoption of FHIR standards in healthcare applications.
+
+## How it works?
+
+This project uses prompt engineering techniques on LLMs, like role-playing and prompt chaining.
+
+There are 3 prompts which aims to breaking down the problem into less complex steps. Each prompt use the output of the previous, in order to improve reasoning.
+
+Those steps cover from giving a techincal report, on the viewpoint of a interoperability developer, from samples of data that needs to be exchanged, passing to an implementation suggestion in high level, and finalizing with a code implementation in Python that converts the original raw data into FHIR standard - this implementation is intented to be refined by human developers.
+
+The following diagrama pictures the whole process:
+
+![IRIS-FHIRfy](./img/system-diagram.png)
+
+You can checkout the prompts in the following classes: [RawDataAnalyzer](./src/dc/jrpereira/fhirfy/core/RawDataAnalyzer.cls), [SolutionSuggestion](./src/dc/jrpereira/fhirfy/core/SolutionGenerator.cls) and [SolutionModuleGenerator](./src/dc/jrpereira/fhirfy/core/SolutionModuleGenerator.cls).
 
 ## Prerequisites
 
