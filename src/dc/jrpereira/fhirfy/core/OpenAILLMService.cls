@@ -10,7 +10,7 @@ Method SendPrompt(prompt As %String, params As %DynamicObject = {{}}) As %Dynami
 
     client = OpenAI(
         # This is the default and can be omitted
-        api_key=self.GetAPIKey(s.environ.get("OPENAI_API_KEY")),
+        api_key=self.GetAPIKey(os.environ.get("OPENAI_API_KEY")),
     )
 
     chat_completion = client.chat.completions.create(
