@@ -41,7 +41,7 @@ ClassMethod GetProviderID(provider As %String) As %String
 ClassMethod GetAPIKey(defaultKey As %String) As %String
 {
     #Dim %request As %CSP.Request
-    Set requestKey = %request.GetCgiEnv("HTTP_X_FHIRFY_LLM_APIKEY")
+    Set requestKey = %request.GetCgiEnv("HTTP_X_FHIRFY_LLM_API_KEY")
     If (requestKey '= "") {
         Return requestKey
     } Else {

@@ -47,8 +47,8 @@ ClassMethod analyzeData() As %Status
         If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")) {
             Set pXFHIRFYLLMPROVIDER=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")
         }
-        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")) {
-            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_API_KEY")) {
+            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_API_KEY")
         }
         Set response=##class(dc.jrpereira.fhirfy.api.impl).analyzeData(pinput,.pmockName,.pXFHIRFYLLMPROVIDER,.pXFHIRFYLLMAPIKEY)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
@@ -76,8 +76,8 @@ ClassMethod suggestSolution() As %Status
         If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")) {
             Set pXFHIRFYLLMPROVIDER=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")
         }
-        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")) {
-            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_API_KEY")) {
+            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_API_KEY")
         }
         Set response=##class(dc.jrpereira.fhirfy.api.impl).suggestSolution(pinput,.pmockName,.pXFHIRFYLLMPROVIDER,.pXFHIRFYLLMAPIKEY)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)
@@ -105,8 +105,8 @@ ClassMethod generateModule() As %Status
         If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")) {
             Set pXFHIRFYLLMPROVIDER=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_PROVIDER")
         }
-        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")) {
-            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_APIKEY")
+        If $data(%request.CgiEnvs("HTTP_X_FHIRFY_LLM_API_KEY")) {
+            Set pXFHIRFYLLMAPIKEY=%request.CgiEnvs("HTTP_X_FHIRFY_LLM_API_KEY")
         }
         Set response=##class(dc.jrpereira.fhirfy.api.impl).generateModule(pinput,.pmockName,.pXFHIRFYLLMPROVIDER,.pXFHIRFYLLMAPIKEY)
         Do ##class(dc.jrpereira.fhirfy.api.impl).%WriteResponse(response)

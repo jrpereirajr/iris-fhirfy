@@ -36,7 +36,6 @@ ClassMethod Log(msg) As %Status
 
 ClassMethod GetAPI(mockName As %String) As dc.jrpereira.fhirfy.core.API
 {
-    ;; , llmProvider As %String, llmApiKey As %String
     Set mockName = $GET(mockName)
     If (mockName = "") {
         Return ##class(dc.jrpereira.fhirfy.core.API).%New()
@@ -50,12 +49,11 @@ ClassMethod GetAPI(mockName As %String) As dc.jrpereira.fhirfy.core.API
 ///     input<br/>
 ///     mockName<br/>
 ///     X-FHIRFY-LLM-PROVIDER<br/>
-///     X-FHIRFY-LLM-APIKEY<br/>
+///     X-FHIRFY-LLM-API-KEY<br/>
 /// WARNING: This method's signature has changed.
 ClassMethod analyzeData(input As %DynamicObject, mockName As %String, XFHIRFYLLMPROVIDER As %String, XFHIRFYLLMAPIKEY As %String) As %DynamicObject
 {
     Do ..%SetStatusCode(200)
-    //Do ..%SetHeader(<name>,<value>)
     Set mockName = $GET(mockName)
     Set api = ..GetAPI(mockName)
     Return api.AnalyzeData(input)
@@ -66,7 +64,7 @@ ClassMethod analyzeData(input As %DynamicObject, mockName As %String, XFHIRFYLLM
 ///     input<br/>
 ///     mockName<br/>
 ///     X-FHIRFY-LLM-PROVIDER<br/>
-///     X-FHIRFY-LLM-APIKEY<br/>
+///     X-FHIRFY-LLM-API-KEY<br/>
 /// WARNING: This method's signature has changed.
 ClassMethod suggestSolution(input As %DynamicObject, mockName As %String, XFHIRFYLLMPROVIDER As %String, XFHIRFYLLMAPIKEY As %String) As %DynamicObject
 {
@@ -82,7 +80,7 @@ ClassMethod suggestSolution(input As %DynamicObject, mockName As %String, XFHIRF
 ///     input<br/>
 ///     mockName<br/>
 ///     X-FHIRFY-LLM-PROVIDER<br/>
-///     X-FHIRFY-LLM-APIKEY<br/>
+///     X-FHIRFY-LLM-API-KEY<br/>
 /// WARNING: This method's signature has changed.
 ClassMethod generateModule(input As %DynamicObject, mockName As %String, XFHIRFYLLMPROVIDER As %String, XFHIRFYLLMAPIKEY As %String) As %DynamicObject
 {

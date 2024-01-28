@@ -31,7 +31,7 @@ paths:
           in: header
           type: string
           required: false
-        - name: X-FHIRFY-LLM-APIKEY
+        - name: X-FHIRFY-LLM-API-KEY
           in: header
           type: string
           required: false
@@ -64,7 +64,7 @@ paths:
           in: header
           type: string
           required: false
-        - name: X-FHIRFY-LLM-APIKEY
+        - name: X-FHIRFY-LLM-API-KEY
           in: header
           type: string
           required: false
@@ -97,7 +97,7 @@ paths:
           in: header
           type: string
           required: false
-        - name: X-FHIRFY-LLM-APIKEY
+        - name: X-FHIRFY-LLM-API-KEY
           in: header
           type: string
           required: false

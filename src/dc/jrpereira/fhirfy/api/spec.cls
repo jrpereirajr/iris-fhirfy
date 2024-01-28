@@ -54,7 +54,7 @@ XData OpenAPI [ MimeType = application/json ]
             "required": false
           },
           {
-            "name": "X-FHIRFY-LLM-APIKEY",
+            "name": "X-FHIRFY-LLM-API-KEY",
             "in": "header",
             "type": "string",
             "required": false
@@ -103,7 +103,7 @@ XData OpenAPI [ MimeType = application/json ]
             "required": false
           },
           {
-            "name": "X-FHIRFY-LLM-APIKEY",
+            "name": "X-FHIRFY-LLM-API-KEY",
             "in": "header",
             "type": "string",
             "required": false
@@ -152,7 +152,7 @@ XData OpenAPI [ MimeType = application/json ]
             "required": false
           },
           {
-            "name": "X-FHIRFY-LLM-APIKEY",
+            "name": "X-FHIRFY-LLM-API-KEY",
             "in": "header",
             "type": "string",
             "required": false
