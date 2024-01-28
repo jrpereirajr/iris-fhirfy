@@ -49,7 +49,7 @@ Those steps cover from giving a techincal report, on the viewpoint of a interope
 
 The following diagrama pictures the whole process:
 
-![IRIS-FHIRfy](./img/system-diagram.png)
+![IRIS-FHIRfy](https://raw.githubusercontent.com/jrpereirajr/iris-fhirfy/master/img/system-diagram.png)
 
 You can checkout the prompts in the following classes: [RawDataAnalyzer](./src/dc/jrpereira/fhirfy/core/RawDataAnalyzer.cls), [SolutionSuggestion](./src/dc/jrpereira/fhirfy/core/SolutionGenerator.cls) and [SolutionModuleGenerator](./src/dc/jrpereira/fhirfy/core/SolutionModuleGenerator.cls).
 
