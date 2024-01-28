@@ -39,17 +39,17 @@ Method GetSystemPrompt(data) As %String [ Language = python ]
 {
     import iris
     clean = iris.cls("dc.jrpereira.fhirfy.core.Utils").CleanTripleQuotesString
-    return clean(f"""You are a helpful interoperability assistant. 
-As such, you'll be interested in explain the structure and content of the data to work with it effectively.
-Explain the following data to a human interoperability developer.
-Return the text into a XML document like this:
+    return clean(f"""You are a helpful interoperability assistant, specialist in healthcare data exchange using FHIR standard. 
+As such, you'll be interested in explain the structure of the target raw data to work with it effectively.
+Explain the following healthcare data to a human interoperability developer.
+A sample of the data for your analysis:
+{data}
+Return the text of you analysis into a XML document like this:
 <result>
 <![CDATA[
 your text
 ]]><result>
-The text string must be formatted using markdown.
-A sample of the data for your analysis:
-{data}""")
+The text string must be formatted using markdown.""")
 }
 
 }
