@@ -168,11 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
         markdownInput.focus();
     });
 
-    showLLMSettings = (selectedLLM) => {
-        document.getElementById('llmSettings').style.display = !selectedLLM ? 'block' : 'none';
+    showLLMSettings = (selectedMock) => {
+        document.getElementById('llmSettings').style.display = !selectedMock ? 'block' : 'none';
     }
 
-    showLLMSettings(document.getElementById('llmProvider').value);
+    showLLMSettings(document.getElementById('mockName').value);
 });
 
 document.addEventListener('keydown', (event) => {
