@@ -2,9 +2,31 @@
  [![Quality Gate Status](https://community.objectscriptquality.com/api/project_badges/measure?project=intersystems_iris_community%2Firis-fhirfy&metric=alert_status)](https://community.objectscriptquality.com/dashboard?id=intersystems_iris_community%2Firis-fhirfy)
  [![Reliability Rating](https://community.objectscriptquality.com/api/project_badges/measure?project=intersystems_iris_community%2Firis-fhirfy&metric=reliability_rating)](https://community.objectscriptquality.com/dashboard?id=intersystems_iris_community%2Firis-fhirfy)
 
+- [IRIS-FHIRfy](#iris-fhirfy)
+  - [Motivation](#motivation)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+    - [Setting a LLM API key](#setting-a-llm-api-key)
+    - [Docker](#docker)
+    - [IPM](#ipm)
+  - [Getting started](#getting-started)
+    - [API](#api)
+      - [Trying without a LLM service API key](#trying-without-a-llm-service-api-key)
+      - [Raw data Analysis](#raw-data-analysis)
+      - [Solution suggestion](#solution-suggestion)
+      - [Solution generation](#solution-generation)
+      - [Refining the generated code](#refining-the-generated-code)
+    - [Web Application](#web-application)
+      - [Mock Data](#mock-data)
+      - [Usage](#usage)
+      - [Error Handling](#error-handling)
+    - [Visual Studio Code Extension](#visual-studio-code-extension)
+      - [Installation](#installation-1)
+- [Dream team](#dream-team)
+
 # IRIS-FHIRfy
 
-IRIS-FHIRfy is a project aimed at simplifying healthcare data interoperability by helping developer to understand and design the workflow from the input data. Leveraging the power of InterSystems IRIS Interoperability and LLMs (Language Model Models), this project offers a seamless solution for converting raw data into the HL7 FHIR (Fast Healthcare Interoperability Resources) standard.
+IRIS-FHIRfy is a project aimed at simplifying healthcare data interoperability by helping developer to understand and design the integration workflow from the input data. Leveraging the power of InterSystems IRIS Interoperability and LLMs (Language Model Models), this project offers a seamless solution for converting raw data into the HL7 FHIR (Fast Healthcare Interoperability Resources) standard.
 
 ## Motivation
 
@@ -24,9 +46,15 @@ Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installi
 
 ### Setting a LLM API key
 
-If you are using a LLM service, you need to set an API key.
+In order to us a LLM service, you need to set an API key.
 
-Important: currently only Google Gemini LLM service is supported. OpenAI LLM service will be added in the future.
+Currently, this project supports Google Gemini and OpenAI LLM service is supported.
+
+You can setup your LLM API key in the following way:
+
+- On the web application, filling the "LLM API Key" textbox.
+- On the REST API, settnig the `X-FHIRFY-LLM-API-KEY` header with your API key.
+- On the docker container or IPM package, setting the `OPENAI_API_KEY` and `GEMINI_API_KEY` environment variables.
 
 ```bash
 # OpenAI API key
@@ -67,15 +95,29 @@ set sc=$zpm("install iris-fhirfy")
 
 ## Getting started
 
+You can try the project by:
+
+- REST API
+- Web application
+- VS Code extension
+
+Let's details them in the following sections.
+
 ### API
 
 The API is available at [http://localhost:32783/csp/api/dc/fhirfy](http://localhost:32783/swagger-ui/index.html?url=/csp/api/dc/fhirfy/_spec).
 
-In the examples below, the parameter `?mockName=<mockName>` was used in order to get a reproducible result. Feel free to remove it if you want to check the results using a LLM. Note that for this case, a LLM API key is required.
+In the examples below, the parameter `?mockName=<mockName>` was used in order to get a reproducible result. All the mock data was generated using Googgle Gemini.
 
-All the mock data was generated using Googgle Gemini.
+Feel free to remove the `mockName` parameter if you want to check the results using a LLM. Note that for this case you'll need to provide two header to the API call:
 
-Please note that if you try the API setting an API key, you may get different results than those presented here.
+- An LLM provider in the `X-FHIRFY-LLM-PROVIDER` header.
+  - Currently, values accepted are `gemini` and `openai`.
+- A LLM API key in the `X-FHIRFY-LLM-API-KEY` header.
+
+Please also note that if you try the API setting an API key, you may get different results than those presented here.
+
+#### Trying without a LLM service API key
 
 I'm assuming you are running the project into a container. So first, let's access the container:
 
@@ -87,11 +129,7 @@ Now you are ready to try the API.
 
 You can also try the API using the provided [Postman collection](./openapi/iris-fhirfy.postman_collection.json).
 
-#### Trying without a LLM service API key
-
-The anwsers got while developing the project was presented as mocks, so you can try the API without a LLM service API key.
-
-To access the mocks, just append `?mockName=<mockName>` to the URL. For instance:
+To call the API using mocked data, just append `?mockName=<mockName>` to the URL. For instance:
 
 ```bash
 # note: if you are running inside the container replace the port 52773 to 32783
@@ -106,7 +144,7 @@ curl -X POST http://localhost:${port:-52773}/csp/api/dc/fhirfy/analyze-data?mock
 }'
 ```
 
-Currently the following mocks are available:
+Currently, the following mocks are available:
 
 - `simple-csv`: Mock data for a simple CSV as input
 
@@ -488,20 +526,114 @@ cat fhir_bundle.json
     "resourceType": "Bundle", 
     "type": "collection", 
     "entry": [
-        {"resource": {"resourceType": "Patient", "id": "1", "name": [{"family": "John Doe"}]}}, {"resource": {"resourceType": "Patient", "id": "2", "name": [{"family": "Jane Smith"}]}}, {"resource": {"resourceType": "Patient", "id": "3", "name": [{"family": "Michael Johnson"}]}}, {"resource": {"resourceType": "Patient", "id": "4", "name": [{"family": "Emily Williams"}]}}, {"resource": {"resourceType": "Patient", "id": "5", "name": [{"family": "David Brown"}]}}
+        {"resource": {"resourceType": "Patient", "id": "1", "name": [{"family": "John Doe"}]}}, 
+        {"resource": {"resourceType": "Patient", "id": "2", "name": [{"family": "Jane Smith"}]}}, 
+        {"resource": {"resourceType": "Patient", "id": "3", "name": [{"family": "Michael Johnson"}]}}, 
+        {"resource": {"resourceType": "Patient", "id": "4", "name": [{"family": "Emily Williams"}]}}, 
+        {"resource": {"resourceType": "Patient", "id": "5", "name": [{"family": "David Brown"}]}}
     ]
 }
 ```
 
 As you can see these are the patients in the original CSV converted into FHIR, as requested to the LLM.
 
-## Web Application
+Let's use IRIS to ingest this JSON and make it available to other applications.
 
-### Mock Data
+First, let's check how many Patients there are in the IRIS FHIR database:
+
+```bash
+curl -X GET http://localhost:${port:-52773}/fhir/r4/Patient?_summary=count
+```
+
+```json
+{{"resourceType":"Bundle","id":"af37a1f4-bdeb-11ee-92dc-0242ac1d0002","type":"searchset","timestamp":"2024-01-28T14:44:04Z","total":6,"link":[{"relation":"self","url":"http://localhost:32783/fhir/r4/Patient?_summary=count"}]}
+```
+
+There are 6 patients already in the IRIS FHIR database.
+
+Now, let's ingest the JSON in the IRIS FHIR database:
+
+```bash
+payload='{ 
+    "resourceType": "Bundle", 
+    "type": "collection", 
+    "entry": [ 
+        {"resource": {"resourceType": "Patient", "id": "1", "name": [{"family": "John Doe"}]}}, 
+        {"resource": {"resourceType": "Patient", "id": "2", "name": [{"family": "Jane Smith"}]}}, 
+        {"resource": {"resourceType": "Patient", "id": "3", "name": [{"family": "Michael Johnson"}]}}, 
+        {"resource": {"resourceType": "Patient", "id": "4", "name": [{"family": "Emily Williams"}]}}, 
+        {"resource": {"resourceType": "Patient", "id": "5", "name": [{"family": "David Brown"}]}} 
+    ] 
+}'
+curl -X POST http://localhost:${port:-52773}/fhir/r4/ \
+    -u "_system:SYS" \
+    -H "Content-Type: application/fhir+json;charset=utf-8" \
+    --data-binary "$payload"
+```
+
+```json
+{"resourceType":"OperationOutcome","issue":[{"severity":"error","code":"invalid","diagnostics":"<HSFHIRErr>InvalidBundleTypeForTransaction","details":{"text":"The provided bundle type, collection, is not allowed for a Transaction interaction."}}]}
+```
+
+The error was generated because the `Bundle` resource type setup - `collection`, is not allowed for a `Transaction` interaction. So we need to change the `Bundle` resource type to `transaction`. Futhermore, we also have to add `request` property to each `entry`, like this:
+
+```bash
+payload='{ 
+    "resourceType": "Bundle", 
+    "type": "collection", 
+    "entry": [ 
+        {"request": {"method": "POST", "url": "Patient"}, "resource": {"resourceType": "Patient", "id": "1", "name": [{"family": "John Doe"}]}}, 
+        {"request": {"method": "POST", "url": "Patient"}, "resource": {"resourceType": "Patient", "id": "2", "name": [{"family": "Jane Smith"}]}}, 
+        {"request": {"method": "POST", "url": "Patient"}, "resource": {"resourceType": "Patient", "id": "3", "name": [{"family": "Michael Johnson"}]}}, 
+        {"request": {"method": "POST", "url": "Patient"}, "resource": {"resourceType": "Patient", "id": "4", "name": [{"family": "Emily Williams"}]}}, 
+        {"request": {"method": "POST", "url": "Patient"}, "resource": {"resourceType": "Patient", "id": "5", "name": [{"family": "David Brown"}]}} 
+    ] 
+}'
+curl -X POST http://localhost:${port:-52773}/fhir/r4/ \
+    -u "_system:SYS" \
+    -H "Content-Type: application/fhir+json;charset=utf-8" \
+    --data-binary "$payload"
+```
+
+```json
+{
+    "resourceType":"Bundle",
+    "id":"b9f55591-bded-11ee-92dc-0242ac1d0002",
+    "type":"transaction-response",
+    "timestamp":"2024-01-28T14:58:41Z",
+    "entry":[
+        {"response":{"status":"201","location":"http://localhost:32783/fhir/r4/Patient/2228","etag":"W/\"1\"","lastModified":"2024-01-28T14:58:42Z"}},
+        {"response":{"status":"201","location":"http://localhost:32783/fhir/r4/Patient/2229","etag":"W/\"1\"","lastModified":"2024-01-28T14:58:42Z"}},
+        {"response":{"status":"201","location":"http://localhost:32783/fhir/r4/Patient/2230","etag":"W/\"1\"","lastModified":"2024-01-28T14:58:42Z"}},
+        {"response":{"status":"201","location":"http://localhost:32783/fhir/r4/Patient/2231","etag":"W/\"1\"","lastModified":"2024-01-28T14:58:42Z"}},
+        {"response":{"status":"201","location":"http://localhost:32783/fhir/r4/Patient/2232","etag":"W/\"1\"","lastModified":"2024-01-28T14:58:42Z"}}
+    ]
+}
+```
+
+Finally, let's check how many Patients there are now in the IRIS FHIR database:
+
+```bash
+curl -X GET http://localhost:${port:-52773}/fhir/r4/Patient?_summary=count
+```
+
+```json
+{"resourceType":"Bundle","id":"c3f4e1ed-bded-11ee-92dc-0242ac1d0002","type":"searchset","timestamp":"2024-01-28T14:58:58Z","total":11,"link":[{"relation":"self","url":"http://localhost:32783/fhir/r4/Patient?_summary=count"}]}
+```
+
+As you can see, now there are 11 patients as expected - the 6 already presented plus the 5 new one inserted in the transaction.
+
+### Web Application
+
+If you want to try the project but with no need to handle REST API calls, you use the Web Application.
+
+The Web Application is available at [this link](http://localhost:32783/csp/fhirfy/index.html).
+
+#### Mock Data
 
 If you don't have real data, you can choose the "Use Mock Data" option for a sample analysis.
 
-### Usage
+#### Usage
 
 1. Enter your raw data in Markdown format into the provided textarea.
 
@@ -511,13 +643,17 @@ If you don't have real data, you can choose the "Use Mock Data" option for a sam
 
 4. Generate code for a chosen solution as a ZPM module by clicking "Generate Code."
 
-### Error Handling
+#### Error Handling
 
 If there's an error during analysis or suggestion, an error message will be displayed above the response.
 
-## Visual Studio Code Extension
+### Visual Studio Code Extension
 
-### Installation
+A last way to use the project is to use the Visual Studio Code extension.
+
+That way is handy due as it is likely you'll need to do some adjusts to the generated module, you are already inside VS Code.
+
+#### Installation
 
 1. Open Visual Studio Code and navigate to the Extensions tab.
 
