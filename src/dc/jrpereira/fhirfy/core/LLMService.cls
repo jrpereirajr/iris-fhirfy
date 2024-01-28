@@ -29,8 +29,11 @@ ClassMethod GetLLMService(provider As %String = "") As LLMService
 ClassMethod GetProviderID(provider As %String) As %String
 {
     If (provider = "") {
+        Set requestProvider = ""
         #Dim %request As %CSP.Request
-        Set requestProvider = %request.GetCgiEnv("HTTP_X_FHIRFY_LLM_PROVIDER")
+        If ($ISOBJECT($GET(%request))) {
+            Set requestProvider = %request.GetCgiEnv("HTTP_X_FHIRFY_LLM_PROVIDER")
+        }
         If (requestProvider '= "") {
             Set provider = requestProvider
         }
@@ -40,8 +43,11 @@ ClassMethod GetProviderID(provider As %String) As %String
 
 ClassMethod GetAPIKey(defaultKey As %String) As %String
 {
+    Set requestKey = ""
     #Dim %request As %CSP.Request
-    Set requestKey = %request.GetCgiEnv("HTTP_X_FHIRFY_LLM_API_KEY")
+    If ($ISOBJECT($GET(%request))) {
+        Set requestKey = %request.GetCgiEnv("HTTP_X_FHIRFY_LLM_API_KEY")
+    }
     If (requestKey '= "") {
         Return requestKey
     } Else {
