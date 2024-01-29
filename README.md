@@ -649,17 +649,37 @@ The Web Application is available at [this link](http://localhost:32783/csp/fhirf
 
 #### Mock Data
 
+![Mock data](/assets/webapp_00.png)
+
 If you don't have real data, you can choose the "Use Mock Data" option for a sample analysis.
+
+#### Theme
+
+![Dark theme](/assets/webapp_06.png)
+
+Toggle between light and dark themes using the theme switcher located in the top-right corner.
 
 #### Usage
 
+![Markdown Raw data](/assets/webapp_01.png)
+
 1. Enter your raw data in Markdown format into the provided textarea.
+
+![Analyse it](/assets/webapp_02.png)
 
 2. Click the "Analyse it!" button to receive an analysis report.
 
+![Suggest implementation](/assets/webapp_03.png)
+
 3. To suggest a solution based on the analysis, click "Suggest Implementation."
 
-4. Generate code for a chosen solution as a ZPM module by clicking "Generate Code."
+![Generate Code](/assets/webapp_04.png)
+
+4. Generate code for a chosen solution by clicking "Generate Code."
+
+![Download Generated Code](/assets/webapp_05.png)
+
+5. To download the generated code, click the provided link in the response.
 
 #### Error Handling
 
