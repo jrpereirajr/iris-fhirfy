@@ -89,7 +89,7 @@ $ git clone https://github.com/jrpereirajr/iris-fhirfy.git
 Open the terminal in this directory and run:
 
 ```
-$ docker-compose up -d
+$ docker-compose --progress plain build && docker-compose up -d
 ```
 
 ### IPM
@@ -493,6 +493,9 @@ Let's try run the module again:
 
 ```bash
 python main.py
+```
+
+```bash
 Traceback (most recent call last):
   File "/tmp/test1/fhir_bundle_creator/main.py", line 18, in <module>
     main()
@@ -595,7 +598,7 @@ The error was generated because the `Bundle` resource type setup - `collection`,
 ```bash
 payload='{ 
     "resourceType": "Bundle", 
-    "type": "collection", 
+    "type": "transaction", 
     "entry": [ 
         {"request": {"method": "POST", "url": "Patient"}, "resource": {"resourceType": "Patient", "id": "1", "name": [{"family": "John Doe"}]}}, 
         {"request": {"method": "POST", "url": "Patient"}, "resource": {"resourceType": "Patient", "id": "2", "name": [{"family": "Jane Smith"}]}}, 
