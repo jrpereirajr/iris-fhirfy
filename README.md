@@ -671,6 +671,10 @@ A last way to use the project is to use the Visual Studio Code extension.
 
 That way is handy due as it is likely you'll need to do some adjusts to the generated module, you are already inside VS Code.
 
+
+https://github.com/jrpereirajr/iris-fhirfy/assets/6039/e4599a8d-24c1-4365-81f2-22ee63bbb987
+
+
 #### Installation
 
 1. Open Visual Studio Code and navigate to the Extensions tab.
