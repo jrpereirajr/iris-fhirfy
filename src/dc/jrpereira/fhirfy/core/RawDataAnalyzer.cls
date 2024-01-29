@@ -18,6 +18,10 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     rawData = input._Get("rawData")
     xmlData = self.GetLLMResponse(rawData)
 
+    xmlData = xmlData.replace("```xml\n", "")
+    xmlData = xmlData.replace("```xml", "")
+    xmlData = xmlData.replace("```\n", "")
+    xmlData = xmlData.replace("```", "")
     try:
         result = xmltodict.parse(xmlData)["result"]
     except Exception as e:
@@ -43,12 +47,15 @@ Method GetSystemPrompt(data) As %String [ Language = python ]
 As such, you'll be interested in explain the structure of the target raw data to work with it effectively.
 Explain the following healthcare data to a human interoperability developer.
 A sample of the data for your analysis:
+```
 {data}
+```
 Return the text of you analysis into a XML document like this:
-<result>
-<![CDATA[
+
+<result><![CDATA[
 your text
 ]]><result>
+
 The text string must be formatted using markdown.""")
 }
 
