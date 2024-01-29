@@ -1,5 +1,5 @@
 const simulateTypingAnimation = (text, btn, container, req) => {
-    const typingSpeed = 15; // Adjust speed as needed
+    const typingSpeed = 1; // Adjust speed as needed
     let index = 0;
     if (!!!text || text.length === 0) return;
 
@@ -66,7 +66,10 @@ const suggestButton = (responseTextContent, rawData) => {
     suggestButton.className = 'suggest-button';
     suggestButton.textContent = 'Suggest Implementation';
     suggestButton.addEventListener('click', () => {
-        suggestImplementation({"analysis": responseTextContent, "rawData": rawData});
+        const spinnerIcon = document.createElement('i')
+        spinnerIcon.className = 'fas fa-spinner fa-spin button-icon';
+        suggestButton.appendChild(spinnerIcon);
+        suggestImplementation({"analysis": responseTextContent, "rawData": rawData}, suggestButton);
     });
     suggestDiv.appendChild(suggestButton);
     return suggestDiv;
@@ -78,7 +81,10 @@ const generateModelButton = (request) => {
     genModelButton.className = 'gen-model-button';
     genModelButton.textContent = 'Generate Model';
     genModelButton.addEventListener('click', () => {
-        generateModel(request, 'model');
+        const spinnerIcon = document.createElement('i');
+        spinnerIcon.className = 'fas fa-spinner fa-spin button-icon';
+        genModelButton.appendChild(spinnerIcon);
+        generateModel(request, genModelButton);
     });
     genModelDiv.appendChild(genModelButton);
     return genModelDiv;
@@ -190,7 +196,7 @@ const saveSettings = () => {
     toggleSettingsForm(); 
 }
 
-suggestImplementation = (request) => {
+suggestImplementation = (request, suggestButton) => {
     const username = document.getElementById('username').value,
         password = document.getElementById('password').value,
         mockName = document.getElementById('mockName').value,
@@ -211,6 +217,7 @@ suggestImplementation = (request) => {
     .then(response => response.json())
     .then(data => {
         console.log('Suggested implementation:', data);
+        suggestButton.querySelector('.fa-spinner').remove();
         if (!!!data.solutionSuggestion) return console.log('No implementation found');
         let suggestion = `## ${data.solutionSuggestion.name}\n${data.solutionSuggestion.description}`;
         if (data.solutionSuggestion.hasOwnProperty("subModules")) data.solutionSuggestion.subModules.subModule.forEach((submodule) => {
@@ -226,7 +233,7 @@ suggestImplementation = (request) => {
     });
 }
 
-generateModel = (request) => {
+generateModel = (request, genModelButton) => {
     const username = document.getElementById('username').value,
         password = document.getElementById('password').value,
         mockName = document.getElementById('mockName').value,
@@ -245,9 +252,10 @@ generateModel = (request) => {
     .then(response => response.json())
     .then(data => {
         console.log('generated module:', data);
+        genModelButton.querySelector('.fa-spinner').remove();
 
         if (!!!data) return console.log('No implementation found');
-        gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n [download module](/download?moduleName=${data.name})\n `;
+        gen_module = `## Generated Module\n\n### ${data.name}\n__${data.description}__\n**${data.dependencies}**\n [download module](/csp/api/dc/fhirfy/download?moduleName=${data.name})\n `;
         if (data.hasOwnProperty("files")) data.files.forEach((file) => {
             gen_module += `\n#### ${file.name}\n${!!!file.description ? '' : file.description}\n\`\`\`\n ${file["source-code"]}\n\`\`\`\n`
         })
