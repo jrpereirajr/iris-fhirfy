@@ -5,6 +5,8 @@ const simulateTypingAnimation = (text, btn, container, req) => {
 
     const type = () => {
         responseText.textContent = text.slice(0, index);
+        let chatContainer = document.getElementById('chatContainer');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
 
         if (index < text.length) {
             index++;

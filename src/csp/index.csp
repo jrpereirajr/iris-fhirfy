@@ -57,7 +57,7 @@
                             <option value="gemini">Gemini</option>
                         </select>
                         <label for="llmApiKey">LLM API key</label>
-                        <input type="text" id="llmApiKey" name="llmApiKey" value="">
+                        <input type="password" id="llmApiKey" name="llmApiKey" value="">
                     </div>
                 </p>
 
