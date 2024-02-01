@@ -1,4 +1,4 @@
-Class dc.jrpereira.fhirfy.core.RawDataAnalyzer Extends %RegisteredObject
+Class dc.jrpereira.fhirfy.core.RawDataAnalyzer Extends dc.jrpereira.fhirfy.core.LLMAgent
 {
 
 Property llm As LLMService;
@@ -30,13 +30,6 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     result = {"markdownResponse": result}
     result = json.dumps(result)
     return result
-}
-
-Method GetLLMResponse(input) As %String [ Language = python ]
-{
-    prompt = self.GetSystemPrompt(input)
-    xmlData = self.llm.SendPrompt(prompt)
-    return xmlData
 }
 
 Method GetSystemPrompt(data) As %String [ Language = python ]

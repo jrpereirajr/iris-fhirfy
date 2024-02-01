@@ -1,4 +1,4 @@
-Class dc.jrpereira.fhirfy.core.SolutionGenerator Extends %RegisteredObject
+Class dc.jrpereira.fhirfy.core.SolutionGenerator Extends dc.jrpereira.fhirfy.core.LLMAgent
 {
 
 Property llm As LLMService;
@@ -24,13 +24,6 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     except Exception as e:
         raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
     return json.dumps(result)
-}
-
-Method GetLLMResponse(input) As %String [ Language = python ]
-{
-    prompt = self.GetSystemPrompt(input)
-    xmlData = self.llm.SendPrompt(prompt)
-    return xmlData
 }
 
 Method GetSystemPrompt(data) As %String [ Language = python ]

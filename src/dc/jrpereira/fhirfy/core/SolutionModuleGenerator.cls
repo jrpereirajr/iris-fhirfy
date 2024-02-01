@@ -1,4 +1,4 @@
-Class dc.jrpereira.fhirfy.core.SolutionModuleGenerator Extends %RegisteredObject
+Class dc.jrpereira.fhirfy.core.SolutionModuleGenerator Extends dc.jrpereira.fhirfy.core.LLMAgent
 {
 
 Property llm As LLMService;
@@ -19,43 +19,6 @@ Method GetResponse(dataInput As %DynamicObject) As %String [ Language = python ]
     xmlData = self.GetLLMResponse(input)
     result = self.GenerateModule(xmlData)
     return result
-
-    #; # writes the xmlData content to the file /tmp/resp.txt
-    #; f = open("/tmp/resp.txt", "w")
-    #; f.write(xmlData)
-    #; f.close()
-
-    #; xmlData = xmlData.replace("```xml", "")
-    #; xmlData = xmlData.replace("```", "")
-    #; #; xmlData = xmlData.replace("                ", "")
-    
-    #; try:
-    #;     xmlDict = xmltodict.parse(xmlData)
-    #; except Exception as e:
-    #;     raise Exception("Failed to parse XML data: " + str(e) + "\n XML data: " + xmlData)
-    #; xmlDict = xmlDict["module"]
-    #; # avoid the structure ["files"]["file"]
-    #; xmlDict["files"] = xmlDict["files"]["file"]
-    #; result = json.dumps(xmlDict)
-
-    #; result = iris.cls("%Library.DynamicObject")._FromJSON(result)
-    #; self.CreateSolutionModuleWrapper(result)
-
-    #; return result
-}
-
-Method GetLLMResponse(input) As %String [ Language = python ]
-{
-    prompt = self.GetSystemPrompt(input)
-    try:
-        xmlData = self.llm.SendPrompt(prompt)
-    except ValueError as e:
-        if str(e).find("This response is not simple text.Use the `result.parts` accessor or the full `result.candidates[index].content.parts` lookup instead") != -1:
-            raise Exception("Your prompt seems to let the LLM to produce a very long response, which was denied. Prompt: " + str(e))
-        raise e
-    except Exception as e:
-        raise e
-    return xmlData
 }
 
 Method GetSystemPrompt(data) As %String [ Language = python ]
