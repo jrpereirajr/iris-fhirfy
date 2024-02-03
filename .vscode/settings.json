@@ -18,7 +18,8 @@
       "links": {
         "FHIRfy API": "http://localhost:${port}/swagger-ui/index.html?url=/csp/api/dc/fhirfy/_spec",
         "FHIRfy Application": "http://localhost:${port}/csp/fhirfy/index.html",
-        "FHIR server test": "http://localhost:${port}/fhir/r4/metadata"
+        "FHIR server test": "http://localhost:${port}/fhir/r4/metadata",
+        "Sample production": "http://localhost:${port}/csp/user/EnsPortal.ProductionConfig.zen?PRODUCTION=dc.jrpereira.fhirfy.samples.fhirbundlecreator.NewProduction#"
       }
     },
     "sqltools.connections": [

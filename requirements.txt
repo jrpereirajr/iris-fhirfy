@@ -1,3 +1,4 @@
 xmltodict
 google-generativeai
 openai
+fhir.resources
