@@ -25,6 +25,8 @@
       - [Error Handling](#error-handling)
     - [Visual Studio Code Extension](#visual-studio-code-extension)
       - [Installation](#installation-1)
+- [Limitations](#limitations)
+- [Future work](#future-work)
 - [Dream team](#dream-team)
 
 # IRIS-FHIRfy
@@ -91,7 +93,7 @@ $ git clone https://github.com/jrpereirajr/iris-fhirfy.git
 Open the terminal in this directory and run:
 
 ```
-$ docker-compose --progress plain build && docker-compose up -d
+$ docker-compose up -d
 ```
 
 ### IPM
@@ -786,6 +788,22 @@ In the file picker dialog that opens, navigate to the project root and select th
 5. Use the `ctrl+alt+f` (or `cmd+alt+f` on macOS) keyboard shortcut or find the "FHIRfy Analyzer: Show" command to open the extension.
 6. Enjoy analyzing FHIR data directly within Visual Studio Code!
 
+# Limitations
+
+This project is currently in an experimental phase, and as such, it is expected to produce incorrect or unusual results. Our primary objective at this stage is to test the fundamental concept of harnessing the capabilities of LLMs to assist developers in converting generic healthcare data into the FHIR standard.
+
+It's worth noting that we have only worked with very basic and straightforward structured data thus far.
+
+While expecting code to convert unstructured generic healthcare data, such as clinical notes, may be a challenging endeavor, the technical analysis report provided by the tool can still be valuable for developers seeking to understand the data they are working with.
+
+Furthermore, it's important to emphasize that certain critical topics, such as data privacy and security, are not addressed within the scope of this project. These areas must be addressed in future research and development.
+
+# Future work
+
+- Create metrics for test performance on differents LLM providers and/or aproaches
+- Train a PPI model to alert possible PPI leaks in healthcare sample data sent to LLMs providers
+- Try frameworks like langchain, llamaindex and crew.ia
+- Try multimodel LLMs - image and audio as input
 
 # Dream team
 
